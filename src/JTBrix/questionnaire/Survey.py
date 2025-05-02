@@ -5,6 +5,7 @@ import time
 import webbrowser
 
 
+# {f'window.location.href="/question/{int(index) + 1}";' if int(index) < result["expected"] else 'document.body.innerHTML = "<h2>Thank you!</h2>";'}
 
 def questioner(app, question, option1, option2, color1, color2, image_path, result, index):
     """
@@ -71,7 +72,7 @@ def questioner(app, question, option1, option2, color1, color2, image_path, resu
                     }},
                     body: JSON.stringify({{answer: answer, time: elapsed}})
                 }}).then(() => {{
-                    {f'window.location.href="/question/{int(index) + 1}";' if int(index) < result["expected"] else 'document.body.innerHTML = "<h2>Thank you!</h2>";'}
+                    {f'window.location.href="/question/{int(index) + 1}";' if int(index) < result["expected"] else 'window.location.href="/popup";'}
                 }});
             }}
         </script>
@@ -94,11 +95,15 @@ def questioner(app, question, option1, option2, color1, color2, image_path, resu
         data = request.get_json()
         result['answers'].append(data['answer'])
         result['times'].append(data['time'])
-
+        print(f"Submitted index: {index}, expected: {result['expected']}")
+        # if int(index) < result['expected']:
+        #     return f"<script>window.location.href='/question/{int(index) + 1}'</script>"
+        # else:
+        #     return "<h2>Thank you!</h2>"
         if int(index) < result['expected']:
             return f"<script>window.location.href='/question/{int(index) + 1}'</script>"
         else:
-            return "<h2>Thank you!</h2>"
+            return f"<script>window.location.href='/popup'</script>"
 
     app.add_url_rule(
         f'/submit/{index}',
@@ -196,7 +201,7 @@ def register_popup_question(app, question_text, options, colors, port):
         return '', 204
 
     def wait_for_response():
-        webbrowser.open(f"http://127.0.0.1:{port}/popup")  # Assumes app is already running
+       # webbrowser.open(f"http://127.0.0.1:{port}/popup")  # Assumes app is already running
         while 'answer' not in result:
             time.sleep(0.1)
         return result['answer'], result['time']

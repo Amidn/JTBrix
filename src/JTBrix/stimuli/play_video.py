@@ -14,8 +14,7 @@ def register_video(app, video_path):
 
     @app.route('/video')
     def serve_video():
-        return render_template_string(f"""
-        <!DOCTYPE html>
+        return f"""
         <html>
         <head>
             <title>Video</title>
@@ -28,41 +27,43 @@ def register_video(app, video_path):
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    flex-direction: column;
-                }}
-                video {{
-                    width: 100%;
-                    height: 100%;
-                    display: none;
-                    object-fit: contain;
                 }}
                 #startBtn {{
+                    position: absolute;
+                    z-index: 2;
+                    padding: 20px 40px;
                     font-size: 24px;
-                    padding: 15px 30px;
                     background-color: #28a745;
                     color: white;
                     border: none;
                     border-radius: 8px;
                     cursor: pointer;
                 }}
+                video {{
+                    display: none;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                }}
             </style>
         </head>
         <body>
-            <button id="startBtn">Start Video</button>
-            <video id="videoPlayer" controls onended="window.location.href='/question/1'">
-                <source src="/static/{video_filename}" type="video/mp4">
+            <button id="startBtn" onclick="startVideo()">Start Video</button>
+            <video id="videoPlayer" onended="window.location.href='/question/1'">
+                <source src="/static/{os.path.basename(video_path)}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
 
             <script>
-                document.getElementById("startBtn").onclick = function () {{
-                    const video = document.getElementById("videoPlayer");
-                    this.style.display = "none";
-                    video.style.display = "block";
-                    video.play().catch(e => console.log("Playback error:", e));
-                    video.requestFullscreen().catch(e => console.log("Fullscreen not supported:", e));
-                }};
+                function startVideo() {{
+                    const video = document.getElementById('videoPlayer');
+                    const button = document.getElementById('startBtn');
+                    button.style.display = 'none';
+                    video.style.display = 'block';
+                    video.play();
+                    video.requestFullscreen().catch(e => console.log("Fullscreen not allowed:", e));
+                }}
             </script>
         </body>
         </html>
-        """)
+        """

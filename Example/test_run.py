@@ -32,7 +32,7 @@ register_consent_page(
 Q1 = ("Which fruit do you prefer?", "Apple", "Banana", "red", "goldenrod", "static/p.jpeg")
 Q2 = ("Which car do you prefer?", "Tesla", "Ford", "blue", "gray", "static/p.jpeg")
 Q3 = ("Which city do you prefer?", "Padova", "Bari", "blue", "gray", "static/p.jpeg")
-webbrowser.open(f"http://127.0.0.1:{free_port}/consent")
+#webbrowser.open(f"http://127.0.0.1:{free_port}/consent")
 answers, times = sequence(app, free_port, Q1, Q2, Q3)
 print("Answers:", answers)
 print("Times:", times)
