@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "JTBrix"
-version = "0.0.1"
-description = "Python Boilerplate contains all the boilerplate you need to create a Python package."
+version = "0.0.2"
+description = "JTBrix is a modular Python package for running behavioral experiments in psychology."
 readme = "README.rst"
 authors = [
   {name = "Amid Nayerhoda", email = "Nayerhoda@infn.it"}
@@ -18,7 +18,8 @@ classifiers = [
 ]
 license = {text = "MIT license"}
 dependencies = [
-  "typer"
+  "numpy",
+  "typer",
 ]
 
 [project.optional-dependencies]
