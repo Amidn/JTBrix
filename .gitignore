@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# Ignore a folder
+/src/JTBrix/Temp/
+
+
 # Distribution / packaging
 .Python
 env/
