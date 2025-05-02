@@ -20,6 +20,7 @@ license = {text = "MIT license"}
 dependencies = [
   "numpy",
   "typer",
+  "flask==3.1.0"
 ]
 
 [project.optional-dependencies]
