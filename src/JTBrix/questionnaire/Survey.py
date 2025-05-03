@@ -209,6 +209,80 @@ def register_popup_question(app, question_text, options, colors, port):
     return wait_for_response
 
 
+def register_consent_page1(app, route, next_route, main_text, checkbox_text, button_text, button_color):
+    html_template = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Consent</title>
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                margin: 40px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                min-height: 100vh;
+            }}
+            .content {{
+                font-size: 18px;
+                margin-bottom: 40px;
+                white-space: pre-wrap;
+            }}
+            .checkbox {{
+                display: flex;
+                align-items: center;
+                font-size: 16px;
+                margin-bottom: 20px;
+            }}
+            #startBtn {{
+                padding: 15px;
+                font-size: 18px;
+                border: none;
+                border-radius: 8px;
+                background-color: {button_color};
+                color: white;
+                cursor: not-allowed;
+                opacity: 0.5;
+                width: 200px;
+                align-self: center;
+            }}
+            #startBtn.enabled {{
+                cursor: pointer;
+                opacity: 1.0;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="content">{main_text}</div>
+        <label class="checkbox">
+            <input type="checkbox" id="agreeBox" onchange="toggleButton()"> {checkbox_text}
+        </label>
+        <button id="startBtn" onclick="proceed()" disabled>{button_text}</button>
+
+        <script>
+            function toggleButton() {{
+                const btn = document.getElementById('startBtn');
+                const box = document.getElementById('agreeBox');
+                if (box.checked) {{
+                    btn.classList.add("enabled");
+                    btn.disabled = false;
+                }} else {{
+                    btn.classList.remove("enabled");
+                    btn.disabled = true;
+                }}
+            }}
+            function proceed() {{
+                window.location.href = '{next_route}';
+            }}
+        </script>
+    </body>
+    </html>
+    """
+
+    app.add_url_rule(route, endpoint=f"consent_page_{route}", view_func=lambda: render_template_string(html_template))
+
+
 def register_consent_page(app, route, next_route, main_text, checkbox_text, button_text, button_color):
     html_template = f"""
     <!DOCTYPE html>
@@ -261,6 +335,13 @@ def register_consent_page(app, route, next_route, main_text, checkbox_text, butt
         <button id="startBtn" onclick="proceed()" disabled>{button_text}</button>
 
         <script>
+            // Try to re-enter fullscreen if already allowed by browser
+            document.addEventListener('DOMContentLoaded', () => {{
+                if (document.fullscreenEnabled && !document.fullscreenElement) {{
+                    document.documentElement.requestFullscreen().catch(e => console.log("Fullscreen not granted:", e));
+                }}
+            }});
+
             function toggleButton() {{
                 const btn = document.getElementById('startBtn');
                 const box = document.getElementById('agreeBox');
