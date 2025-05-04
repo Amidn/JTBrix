@@ -145,7 +145,34 @@ def experiment():
             function submitPopup(answer, time) {
                 popupResult.answer = answer;
                 popupResult.time = time;
-                nextStep();  // Progress to final screen
+
+                const fullResults = {
+                    answers: results.answers,
+                    times: results.times,
+                    final_answer: popupResult.answer,
+                    final_time: popupResult.time
+                };
+
+                fetch("/submit_results", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(fullResults)
+                }).then(() => {
+                    const step = flow[stepIndex + 1];  // peek ahead
+                    if (step && step.type === "end") {
+                        stepIndex++;  // advance manually
+                        const endHTML = `
+                            <div style="display: flex; justify-content: center; align-items: center; 
+                                        height: 100vh; background: ${step.background || "#f0f0f0"}; 
+                                        color: ${step.text_color || "#333"}; font-family: Arial;">
+                                <h1>${step.message || "Thank you for your participation!"}</h1>
+                            </div>`;
+                        document.getElementById('content').innerHTML = endHTML;
+                        document.exitFullscreen();
+                    } else {
+                        nextStep();  // fallback
+                    }
+                });
             }
 
             // Start experiment
