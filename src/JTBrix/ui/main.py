@@ -40,7 +40,7 @@ def experiment():
             const flow = {{ flow_json | safe }};
             let stepIndex = -1;
             const results = { answers: [], times: [] };
-            const popupResult = {};
+            const popupResult = [];
 
             function loadScreen(screenUrl) {
                 const contentDiv = document.getElementById('content');
@@ -56,13 +56,15 @@ def experiment():
                 // Save previous step's results
                 if (stepIndex >= 0) {
                     const currentStep = flow[stepIndex];
-                    if (currentStep.type === 'question') {
+                    if (['question', 'dropdown'].includes(currentStep.type)) {
                         results.answers.push(answer);
                         results.times.push(time);
                     }
+                    else if (currentStep.type === 'dob') {
+                        results.answers.push(answer);
+                    }
                     if (currentStep.type === 'popup') {
-                        popupResult.answer = answer;
-                        popupResult.time = time;
+                        popupResult.push({ answer, time });
                     }
                 }
 
@@ -82,7 +84,7 @@ def experiment():
                     const fullResults = {
                         answers: results.answers,
                         times: results.times,
-                        ...popupResult
+                        popup_results: popupResult
                     };
                     fetch("/submit_results", {
                         method: "POST",
@@ -118,7 +120,7 @@ def experiment():
                         const fullResults = {
                             answers: results.answers,
                             times: results.times,
-                            ...popupResult
+                            popup_results: popupResult
                         };
                         const endHTML = `
                             <div style="display: flex; justify-content: center; align-items: center; 
