@@ -7,16 +7,16 @@ __version__ = '0.0.2'
 
 # Import core functionality to the top level
 from JTBrix.experiment import run_session  # Example: if you have a main entry point
-from JTBrix.stimuli import play_video     # Example: expose frequently used tools
-from JTBrix.questionnaire import Survey   # Example: expose a core class
+from JTBrix.questionnaire import screens   # Example: expose a core class
 from JTBrix.utils import port  # Example: utility functions
 from JTBrix.ui import main  # Example: if you have a UI component
+from JTBrix.screen_config import flow_config  # Example: if you have a configuration module
 
 
 __all__ = [
     "run_session",
-    "play_video",
-    "Survey",
+    "screens",
     "port",
     "main",
+    "flow_config",
 ]

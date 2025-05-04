@@ -8,7 +8,11 @@ submitted_results = []
 
 @ui.route("/experiment")
 def experiment():
-    return """
+    from JTBrix.screen_config import flow_config  # this will store current config
+
+    flow_json = json.dumps(flow_config)  # injected from runner
+
+    return render_template_string("""
     <!DOCTYPE html>
     <html>
     <head>
@@ -36,40 +40,68 @@ def experiment():
         <div id="content"></div>
 
         <script>
-            let currentQuestion = -1;
-            const totalQuestions = 3;
+            const flow = {{ flow_json | safe }};
+            let stepIndex = -1;
             const results = { answers: [], times: [] };
             const popupResult = {};
 
-            function loadScreen(endpoint) {
+            function loadScreen(screenUrl) {
                 const contentDiv = document.getElementById('content');
-                contentDiv.innerHTML = ''; // Clear previous
+                contentDiv.innerHTML = '';
                 const iframe = document.createElement('iframe');
                 iframe.style.width = '100%';
                 iframe.style.height = '100%';
-                iframe.src = endpoint;
+                iframe.src = screenUrl;
                 contentDiv.appendChild(iframe);
             }
 
-            function start() {
-                document.documentElement.requestFullscreen().catch(e => {});
-                loadScreen('/screen/consent');
-            }
-
-            function proceedToVideo() {
-                loadScreen('/screen/video');
-            }
-
-            function proceedToNextQuestion(answer, time) {
-                if (currentQuestion >= 0) {
+            function nextStep(answer = null, time = null) {
+                if (stepIndex >= 0 && flow[stepIndex].type === 'question') {
                     results.answers.push(answer);
                     results.times.push(time);
                 }
-                currentQuestion++;
-                if (currentQuestion < totalQuestions) {
-                    loadScreen(`/screen/question/${currentQuestion + 1}`);
-                } else {
-                    loadScreen('/screen/popup');
+                if (stepIndex >= 0 && flow[stepIndex].type === 'popup') {
+                    popupResult.answer = answer;
+                    popupResult.time = time;
+                }
+
+                stepIndex++;
+
+                if (stepIndex >= flow.length) return;
+
+                const step = flow[stepIndex];
+                if (step.type === "consent") {
+                    loadScreen("/screen/consent");
+                } else if (step.type === "video") {
+                    loadScreen(`/screen/video?filename=${encodeURIComponent(step.video_filename)}`);
+                } else if (step.type === "question") {
+                    loadScreen(`/screen/question/${stepIndex}`);
+                } else if (step.type === "popup") {
+                    loadScreen(`/screen/popup/${stepIndex}`);
+                } else if (step.type === "end") {
+                    const fullResults = {
+                        answers: results.answers,
+                        times: results.times,
+                        final_answer: popupResult.answer,
+                        final_time: popupResult.time
+                    };
+                    fetch("/submit_results", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(fullResults)
+                    }).then(() => {
+                        const endHTML = `
+                            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;
+                                        background: ${step.background || "#f0f0f0"}; color: ${step.text_color || "#333"}; font-family: Arial;">
+                                <div style="text-align: center;">
+                                    <h1>${step.message || "Thank you for your participation!"}</h1>
+                                    <button onclick="document.exitFullscreen()" style="margin-top: 20px; padding: 10px 20px; font-size: 16px;">
+                                        Exit Fullscreen
+                                    </button>
+                                </div>
+                            </div>`;
+                        document.getElementById('content').innerHTML = endHTML;
+                    });
                 }
             }
 
@@ -86,9 +118,7 @@ def experiment():
 
                 fetch("/submit_results", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(fullResults)
                 }).then(() => {
                     document.getElementById('content').innerHTML = '<h1>Thank you!</h1>';
@@ -96,11 +126,13 @@ def experiment():
                 });
             }
 
-            start();
+            document.documentElement.requestFullscreen().catch(e => {});
+            nextStep();
         </script>
     </body>
     </html>
-    """
+    """, flow_json=flow_json)
+
 
 @ui.route("/submit_results", methods=["POST"])
 def submit_results():
