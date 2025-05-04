@@ -46,32 +46,39 @@ def show_video():
 
 @screens.route("/screen/consent")
 def screen_consent():
-    consent_step = next((step for step in screen_config.flow_config if step.get("type") == "consent"), None)
-    if not consent_step:
-        return "<p>Consent step not found.</p>", 404
+    # Find the 'consent' step from the flow list
+    consent_step = next((step for step in screen_config.flow_config if step.get("type") == "consent"), {})
 
     main_text = consent_step.get("main_text", "Please read the following.")
     checkbox_text = consent_step.get("checkbox_text", "I agree to participate.")
     button_text = consent_step.get("button_text", "Begin")
     button_color = consent_step.get("button_color", "#007BFF")
 
+    # Support either a single string or a list of checkbox labels
+    checkboxes = checkbox_text if isinstance(checkbox_text, list) else [checkbox_text]
+
+    checkbox_html = "".join(
+        f'<label><input type="checkbox" class="consentBox"> {text}</label><br>' for text in checkboxes
+    )
+
     html = f"""
     <div style="padding: 40px; color: black; background: white; height: 100%;">
         <p style="font-size: 18px;">{main_text}</p>
-        <label>
-            <input type="checkbox" id="agreeBox"> {checkbox_text}
-        </label><br><br>
+        {checkbox_html}
+        <br>
         <button id="startBtn" disabled style="padding: 10px 20px; font-size: 16px; background: {button_color}; color: white; border: none; border-radius: 6px;">{button_text}</button>
     </div>
     <script>
-        function toggleButton() {{
-            const btn = document.getElementById('startBtn');
-            const box = document.getElementById('agreeBox');
-            btn.disabled = !box.checked;
+        function checkAllBoxes() {{
+            const all = Array.from(document.querySelectorAll(".consentBox"));
+            const btn = document.getElementById("startBtn");
+            btn.disabled = !all.every(cb => cb.checked);
         }}
 
         document.addEventListener("DOMContentLoaded", function () {{
-            document.getElementById("agreeBox").addEventListener("change", toggleButton);
+            document.querySelectorAll(".consentBox").forEach(cb =>
+                cb.addEventListener("change", checkAllBoxes)
+            );
             document.getElementById("startBtn").addEventListener("click", function () {{
                 window.parent.nextStep();
             }});

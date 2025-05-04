@@ -8,7 +8,7 @@ config = [
     {
         "type": "consent",
         "main_text": "Please read carefully before starting... test1",
-        "checkbox_text": "I agree to participate. test1",
+        "checkbox_text":  "I agree to participate. ",
         "button_text": "Begin1",
         "button_color": "#28a745"
     },
