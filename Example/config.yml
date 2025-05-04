@@ -6,6 +6,11 @@ experiment_content:
       checkbox_text: "I agree to participate. test1"
       button_text: "Begin1"
       button_color: "#28a745"
+    - type: "dob"                           # only for specifying the age
+      "prompt": "Please select your date of birth:"
+    - "type": "dropdown"
+      "prompt": "What is your country of residence?"
+      "options": ["Italy", "Germany", "France", "Other"]
     - type: "popup"
       question: "How do you feel?"
       options: ["Happy", "Neutral", "Sad"]

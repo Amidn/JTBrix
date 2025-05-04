@@ -99,6 +99,12 @@ def experiment():
                     case "consent":
                         loadScreen("/screen/consent");
                         break;
+                    case "dob" :
+                        loadScreen(`/screen/dob/${stepIndex}`);
+                        break;  
+                    case "dropdown":
+                        loadScreen(`/screen/dropdown/${stepIndex}`);
+                        break;
                     case "video":
                         loadScreen(`/screen/video?filename=${encodeURIComponent(step.video_filename)}`);
                         break;
@@ -109,6 +115,11 @@ def experiment():
                         loadScreen(`/screen/popup/${stepIndex}`);
                         break;
                     case "end":
+                        const fullResults = {
+                            answers: results.answers,
+                            times: results.times,
+                            ...popupResult
+                        };
                         const endHTML = `
                             <div style="display: flex; justify-content: center; align-items: center; 
                                         height: 100vh; background: ${step.background || "#f0f0f0"}; 
@@ -117,6 +128,14 @@ def experiment():
                             </div>`;
                         document.getElementById('content').innerHTML = endHTML;
                         document.exitFullscreen();
+
+                        // ✅ Submit results
+                        fetch("/submit_results", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(fullResults)
+                        });
+
                         break;
                     default:
                         console.error("Unknown step type:", step.type);

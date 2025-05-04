@@ -8,9 +8,22 @@ config = [
     {
         "type": "consent",
         "main_text": "Please read carefully before starting... test1",
-        "checkbox_text":  "I agree to participate. ",
+        "checkbox_text": [
+        "I agree to participate. test1",
+        "I am over 18 years old.",
+        "I understand the privacy policy."
+        ],
         "button_text": "Begin1",
         "button_color": "#28a745"
+    },
+    {
+        "type": "dob",
+        "prompt": "Please select your date of birth:"
+    },
+    {
+    "type": "dropdown",
+    "prompt": "What is your country of residence?",
+    "options": ["Italy", "Germany", "France", "Other"]
     },
     {
         "type": "video",
