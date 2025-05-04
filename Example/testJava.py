@@ -1,43 +1,36 @@
 from flask import Flask
-from JTBrix.ui.main import ui
-import os 
+from JTBrix.ui.main import ui, submitted_results
 from JTBrix.questionnaire.screens import screens
-from JTBrix.ui.main import submitted_results
-
-# Override screen_module variables before registering blueprint
+from JTBrix.experiment.run_session import run_unique_test
 from JTBrix.questionnaire import screens as screen_module
+from JTBrix.utils import find_free_port
+import os
+import webbrowser
 
 
 
-screen_module.MAIN_TEXT = "Before continuing, please read the following instructions carefully..."
-screen_module.CHECKBOX_TEXT = "I have read and agree to the conditions."
-screen_module.BUTTON_TEXT = "Start"
-screen_module.BUTTON_COLOR = "#007BFF"
-screen_module.VIDEO_FILENAME = "FB.mp4"
-screen_module.QUESTION_DATA = [
-    ("Which fruit do you prefer?", "Apple", "Banana", "red", "goldenrod", "p.jpeg"),
-    ("Which car do you prefer?", "Tesla", "Ford", "blue", "gray", "p.jpeg"),
-    ("Which city do you prefer?", "Padova", "Bari", "blue", "gray", "p.jpeg")
-]
-screen_module.FINAL_OPTIONS = ["Happy", "Neutral", "Sad"]
-screen_module.FINAL_COLORS = ["green", "gray", "red"]
-screen_module.FINAL_QUESTION = "Final question: How did you feel?"
 
- 
-
-app = Flask(__name__, static_folder="static")
-app.register_blueprint(ui)
-app.register_blueprint(screens)
 
 if __name__ == "__main__":
-    from JTBrix.utils import find_free_port
-    import webbrowser
-    import os
+    config = {
+        "main_text": "Please read carefully before starting...",
+        "checkbox_text": "I agree to participate.",
+        "button_text": "Begin",
+        "button_color": "#28a745",
+        "video_filename": "FB.mp4",
+        "question_data": [
+            ("Pick a fruit:", "Apple", "Banana", "red", "yellow", "p.jpeg"),
+            ("Pick a car:", "Tesla", "Ford", "blue", "gray", "p.jpeg"),
+            ("Pick a city:", "Padova", "Bari", "navy", "olive", "p.jpeg")
+        ],
+        "final_options": ["Happy", "Neutral", "Sad"],
+        "final_colors": ["green", "gray", "red"],
+        "final_question": "How do you feel?"
+    }
 
-    port = find_free_port()
-    # Open browser only once, even with Flask reloader
-    if os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
-        webbrowser.open(f"http://127.0.0.1:{port}/experiment")
-    app.run(port=port, debug=True)
-    result=  submitted_results
-    print (result)
+
+
+    results = run_unique_test(config, static_folder="/Users/amid/GitHub/JTBrix/Example/static/")
+    print(results)
+
+

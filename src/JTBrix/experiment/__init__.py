@@ -1,3 +1,3 @@
-from .run_session import sequence
+from .run_session import sequence, run_unique_test
 
-__all__ = ['sequence']
+__all__ = ['sequence', "run_unique_test"]
