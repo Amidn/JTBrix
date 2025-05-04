@@ -2,15 +2,12 @@ from flask import Blueprint, request, render_template_string
 import json
 
 ui = Blueprint("ui", __name__)
-
-# Store submitted results in memory (you can later export or print)
 submitted_results = []
 
 @ui.route("/experiment")
 def experiment():
-    from JTBrix.screen_config import flow_config  # this will store current config
-
-    flow_json = json.dumps(flow_config)  # injected from runner
+    from JTBrix.screen_config import flow_config
+    flow_json = json.dumps(flow_config)
 
     return render_template_string("""
     <!DOCTYPE html>
@@ -56,76 +53,83 @@ def experiment():
             }
 
             function nextStep(answer = null, time = null) {
-                if (stepIndex >= 0 && flow[stepIndex].type === 'question') {
-                    results.answers.push(answer);
-                    results.times.push(time);
-                }
-                if (stepIndex >= 0 && flow[stepIndex].type === 'popup') {
-                    popupResult.answer = answer;
-                    popupResult.time = time;
+                // Save previous step's results
+                if (stepIndex >= 0) {
+                    const currentStep = flow[stepIndex];
+                    if (currentStep.type === 'question') {
+                        results.answers.push(answer);
+                        results.times.push(time);
+                    }
+                    if (currentStep.type === 'popup') {
+                        popupResult.answer = answer;
+                        popupResult.time = time;
+                    }
                 }
 
                 stepIndex++;
 
-                if (stepIndex >= flow.length) return;
-
-                const step = flow[stepIndex];
-                if (step.type === "consent") {
-                    loadScreen("/screen/consent");
-                } else if (step.type === "video") {
-                    loadScreen(`/screen/video?filename=${encodeURIComponent(step.video_filename)}`);
-                } else if (step.type === "question") {
-                    loadScreen(`/screen/question/${stepIndex}`);
-                } else if (step.type === "popup") {
-                    loadScreen(`/screen/popup/${stepIndex}`);
-                } else if (step.type === "end") {
+                // Check if experiment is complete
+                if (stepIndex >= flow.length) {
+                    const endHTML = `
+                        <div style="display: flex; justify-content: center; align-items: center; 
+                                    height: 100vh; background: white; color: #333; font-family: Arial;">
+                            <h1>Thank you for participating!</h1>
+                        </div>`;
+                    document.getElementById('content').innerHTML = endHTML;
+                    document.exitFullscreen();
+                    
+                    // Submit final results
                     const fullResults = {
                         answers: results.answers,
                         times: results.times,
-                        final_answer: popupResult.answer,
-                        final_time: popupResult.time
+                        ...popupResult
                     };
                     fetch("/submit_results", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(fullResults)
-                    }).then(() => {
+                    });
+                    
+                    return;
+                }
+
+                // Load next step
+                const step = flow[stepIndex];
+                switch(step.type) {
+                    case "consent":
+                        loadScreen("/screen/consent");
+                        break;
+                    case "video":
+                        loadScreen(`/screen/video?filename=${encodeURIComponent(step.video_filename)}`);
+                        break;
+                    case "question":
+                        loadScreen(`/screen/question/${stepIndex}`);
+                        break;
+                    case "popup":
+                        loadScreen(`/screen/popup/${stepIndex}`);
+                        break;
+                    case "end":
                         const endHTML = `
-                            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;
-                                        background: ${step.background || "#f0f0f0"}; color: ${step.text_color || "#333"}; font-family: Arial;">
-                                <div style="text-align: center;">
-                                    <h1>${step.message || "Thank you for your participation!"}</h1>
-                                    <button onclick="document.exitFullscreen()" style="margin-top: 20px; padding: 10px 20px; font-size: 16px;">
-                                        Exit Fullscreen
-                                    </button>
-                                </div>
+                            <div style="display: flex; justify-content: center; align-items: center; 
+                                        height: 100vh; background: ${step.background || "#f0f0f0"}; 
+                                        color: ${step.text_color || "#333"}; font-family: Arial;">
+                                <h1>${step.message || "Thank you for your participation!"}</h1>
                             </div>`;
                         document.getElementById('content').innerHTML = endHTML;
-                    });
+                        document.exitFullscreen();
+                        break;
+                    default:
+                        console.error("Unknown step type:", step.type);
                 }
             }
 
             function submitPopup(answer, time) {
                 popupResult.answer = answer;
                 popupResult.time = time;
-
-                const fullResults = {
-                    answers: results.answers,
-                    times: results.times,
-                    final_answer: popupResult.answer,
-                    final_time: popupResult.time
-                };
-
-                fetch("/submit_results", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(fullResults)
-                }).then(() => {
-                    document.getElementById('content').innerHTML = '<h1>Thank you!</h1>';
-                    console.log("Results submitted:", fullResults);
-                });
+                nextStep();  // Progress to final screen
             }
 
+            // Start experiment
             document.documentElement.requestFullscreen().catch(e => {});
             nextStep();
         </script>
@@ -133,19 +137,11 @@ def experiment():
     </html>
     """, flow_json=flow_json)
 
-
 @ui.route("/submit_results", methods=["POST"])
 def submit_results():
     data = request.get_json()
-    print("✅ Received Results:", json.dumps(data, indent=2))
-
-    # Store in memory
     submitted_results.append(data)
-
-    # Optionally save to file
-    # with open("results.jsonl", "a") as f:
-    #     f.write(json.dumps(data) + "\n")
-
+    print("✅ Results submitted:", json.dumps(data, indent=2))
     return "", 204
 
 @ui.route("/view_results")

@@ -45,7 +45,7 @@ config = [
     },
     {
         "type": "end",
-        "message": "You’ve completed the experiment. Please call the researcher.",
+        "message": "You’ve completed the experiment. Please call the researcher!",
         "background": "#eeeeee",
         "text_color": "#333333"}
     ]
