@@ -145,14 +145,12 @@ def experiment():
             }
 
             function submitPopup(answer, time) {
-                popupResult.answer = answer;
-                popupResult.time = time;
+                popupResult.push({ answer, time });  // ✅ push to the array
 
                 const fullResults = {
                     answers: results.answers,
                     times: results.times,
-                    final_answer: popupResult.answer,
-                    final_time: popupResult.time
+                    popup_results: popupResult  // ✅ now this is a list of all popups
                 };
 
                 fetch("/submit_results", {
