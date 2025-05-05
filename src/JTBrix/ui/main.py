@@ -49,6 +49,14 @@ def experiment():
             };
             let popupSubmitted = false;
 
+            // --- listen for nextStep requests coming from child iframes ---
+            window.addEventListener("message", (event) => {
+                if (event.data && event.data.type === "nextStep") {
+                    nextStep(event.data.answer ?? null, event.data.time ?? null);
+                }
+            });
+            // ----------------------------------------------------------------
+
             function loadScreen(screenUrl) {
                 const contentDiv = document.getElementById('content');
                 contentDiv.innerHTML = '';
@@ -61,26 +69,26 @@ def experiment():
 
             function nextStep(answer = null, time = null) {
                 popupSubmitted = false;
-                // Save previous step's results
+                // Save previous step's results — but skip automatic handling for pop‑ups
                 if (stepIndex >= 0) {
                     const currentStep = flow[stepIndex];
-                    switch (currentStep.type) {
-                        case 'question':
-                            results.questions_answers.push(answer);
-                            results.questions_times.push(time);
-                            break;
-                        case 'dropdown':
-                            results.dropdown_results.push(answer);
-                            break;
-                        case 'dob':
-                            results.dob_results.push(answer);
-                            break;
-                        case 'text_input':
-                            results.text_input_results.push(answer);
-                            break;
-                        case 'popup':
-                            results.popup_results.push(answer);
-                            break;
+
+                    if (currentStep.type !== 'popup') { // popup already handled in submitPopup()
+                        switch (currentStep.type) {
+                            case 'question':
+                                results.questions_answers.push(answer);
+                                results.questions_times.push(time);
+                                break;
+                            case 'dropdown':
+                                results.dropdown_results.push(answer);
+                                break;
+                            case 'dob':
+                                results.dob_results.push(answer);
+                                break;
+                            case 'text_input':
+                                results.text_input_results.push(answer);
+                                break;
+                        }
                     }
                 }
 
