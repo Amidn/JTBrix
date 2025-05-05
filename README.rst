@@ -1,5 +1,3 @@
-
-======
 JTBrix
 ======
 
@@ -13,8 +11,8 @@ JTBrix
     :target: https://JTBrix.readthedocs.io/en/latest/?version=latest
     :alt: Documentation Status
 
-JTBrix is a modular Python package for running behavioral experiments in psychology.  
-It supports video stimuli, conditional user interaction, and detailed logging of responses and reaction times.
+JTBrix is a modular Python package for running customizable video-based behavioral experiments in psychology and cognitive science.  
+It supports full-screen playback, flexible configuration via YAML, conditional logic flows, and detailed logging of user responses and timing.
 
 * Free software: MIT license
 * Documentation: https://JTBrix.readthedocs.io
@@ -22,11 +20,12 @@ It supports video stimuli, conditional user interaction, and detailed logging of
 Features
 --------
 
-* Run customizable behavioral experiments with video-based stimuli.
-* Play videos, ask related questions, and apply conditional progression logic.
-* Collect participant responses and reaction time data.
-* Organize stimuli and questions by category.
-* Easily extendable with clean modular structure.
+* Dynamically configurable experiments using a `config.yml` file.
+* Supports multiple step types: consent, video, question, popup, dropdown, and end screens.
+* Records answers and reaction times per screen.
+* Fullscreen iframe-based flow in a single browser tab.
+* Video and image stimuli loaded from a customizable static directory.
+* Modular design for extension and easy deployment via Flask.
 
 Installation
 ------------
@@ -44,20 +43,19 @@ Basic example of how to start an experiment:
 
 .. code-block:: python
 
-    from jtbrix.logic.flow import run_experiment
-    run_experiment(config_path="configs/default.yaml")
+    from JTBrix import run_test
+    result = run_test("path/to/config.yml", "path/to/static/")
 
-(Full usage examples and config format are in the documentation.)
+By default, JTBrix looks for a configuration file (`config.yml`) and a `static/` folder under the `Data/` directory.
+
+The `static/` folder must include two subfolders:
+
+- `videos/` – for video stimuli (e.g., `.mp4` files)  
+- `images/` – for images used in questions (e.g., `.jpeg`, `.png`)
+
+You can place these folders anywhere locally or on a server and provide the paths explicitly when calling `run_test()`.
 
 Credits
 -------
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
-
-
-
-
-
+JTBrix was designed and developed by Amid Nayerhoda for experimental research in cognitive science and psychology.
