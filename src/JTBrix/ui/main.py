@@ -39,8 +39,15 @@ def experiment():
         <script>
             const flow = {{ flow_json | safe }};
             let stepIndex = -1;
-            const results = { answers: [], times: [] };
-            const popupResult = [];
+            const results = {
+                questions_answers: [],
+                questions_times: [],
+                popup_results: [],
+                text_input_results: [],
+                dob_results: [],
+                dropdown_results: []
+            };
+            let popupSubmitted = false;
 
             function loadScreen(screenUrl) {
                 const contentDiv = document.getElementById('content');
@@ -53,18 +60,27 @@ def experiment():
             }
 
             function nextStep(answer = null, time = null) {
+                popupSubmitted = false;
                 // Save previous step's results
                 if (stepIndex >= 0) {
                     const currentStep = flow[stepIndex];
-                    if (['question', 'dropdown'].includes(currentStep.type)) {
-                        results.answers.push(answer);
-                        results.times.push(time);
-                    }
-                    else if (currentStep.type === 'dob') {
-                        results.answers.push(answer);
-                    }
-                    if (currentStep.type === 'popup') {
-                        popupResult.push({ answer, time });
+                    switch (currentStep.type) {
+                        case 'question':
+                            results.questions_answers.push(answer);
+                            results.questions_times.push(time);
+                            break;
+                        case 'dropdown':
+                            results.dropdown_results.push(answer);
+                            break;
+                        case 'dob':
+                            results.dob_results.push(answer);
+                            break;
+                        case 'text_input':
+                            results.text_input_results.push(answer);
+                            break;
+                        case 'popup':
+                            results.popup_results.push(answer);
+                            break;
                     }
                 }
 
@@ -82,9 +98,9 @@ def experiment():
                     
                     // Submit final results
                     const fullResults = {
-                        answers: results.answers,
-                        times: results.times,
-                        popup_results: popupResult
+                        answers: results.questions_answers,
+                        times: results.questions_times,
+                        popup_results: results.popup_results
                     };
                     fetch("/submit_results", {
                         method: "POST",
@@ -121,9 +137,9 @@ def experiment():
                         break;
                     case "end":
                         const fullResults = {
-                            answers: results.answers,
-                            times: results.times,
-                            popup_results: popupResult
+                            answers: results.questions_answers,
+                            times: results.questions_times,
+                            popup_results: results.popup_results
                         };
                         const endHTML = `
                             <div style="display: flex; justify-content: center; align-items: center; 
@@ -148,12 +164,27 @@ def experiment():
             }
 
             function submitPopup(answer, time) {
-                popupResult.push({ answer, time });  // ✅ push to the array
+                if (popupSubmitted) {
+                    console.warn("🚫 Popup already submitted — skipping");
+                    return;
+                }
+
+                if (answer == null) {
+                    console.warn("🚫 Null/undefined popup answer — skipping");
+                    return;
+                }
+
+                popupSubmitted = true;
+
+                results.popup_results.push(answer);
 
                 const fullResults = {
-                    answers: results.answers,
-                    times: results.times,
-                    popup_results: popupResult  // ✅ now this is a list of all popups
+                    questions_answers: results.questions_answers,
+                    questions_times: results.questions_times,
+                    popup_results: results.popup_results,
+                    text_input_results: results.text_input_results,
+                    dob_results: results.dob_results,
+                    dropdown_results: results.dropdown_results
                 };
 
                 fetch("/submit_results", {

@@ -1,7 +1,6 @@
 
 
 
-
 experiment_content:
   # This Block and its content will be at the begining of the test 
   - - type: "Begin" 
