@@ -116,6 +116,9 @@ def experiment():
                     case "popup":
                         loadScreen(`/screen/popup/${stepIndex}`);
                         break;
+                    case "text_input":
+                        loadScreen(`/screen/text_input/${stepIndex}`);
+                        break;
                     case "end":
                         const fullResults = {
                             answers: results.answers,
@@ -177,6 +180,7 @@ def experiment():
 
             // Start experiment
             document.documentElement.requestFullscreen().catch(e => {});
+            window.addEventListener("nextScreen", () => nextStep());
             nextStep();
         </script>
     </body>

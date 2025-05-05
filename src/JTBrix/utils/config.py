@@ -74,6 +74,13 @@ def read_experiment_config(yaml_path: str) -> Tuple[List[Dict], List[str]]:
             cb_text = step['checkbox_text']
             if isinstance(cb_text, str):
                 step['checkbox_text'] = [cb_text]
+
+    # Ensure text_input steps have required fields
+    for step in final_config:
+        if step.get('type') == 'text_input':
+            step.setdefault('prompt', 'Please enter your response:')
+            step.setdefault('placeholder', '')
+            step.setdefault('button_text', 'Continue')
     
     return final_config, selected_order
 

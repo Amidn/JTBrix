@@ -207,3 +207,14 @@ def screen_dropdown(index):
     </script>
     """
     return render_template_string(html)
+@screens.route("/screen/text_input/<int:index>")
+def screen_text_input(index):
+    try:
+        step = screen_config.flow_config[index]
+    except IndexError:
+        return abort(404, description="Invalid step index")
+
+    if step.get("type") != "text_input":
+        return abort(400, description="Expected a text_input step")
+
+    return render_template("text_input.html", step=step)

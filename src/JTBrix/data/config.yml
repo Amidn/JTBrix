@@ -10,6 +10,11 @@ experiment_content:
       checkbox_text: ["I agree to participate. test1", "I am over 18 years old.",  "I understand the privacy policy."]
       button_text: "Begin1"
       button_color: "#28a745"
+    - type: "text_input"
+      id: "participant_name"
+      prompt: "Please enter your name:"
+      placeholder: "Your full name"
+      button_text: "Continue"
     - type: "dob"                           # only for specifying the age
       "prompt": "Please select your date of birth:"
     - "type": "dropdown"

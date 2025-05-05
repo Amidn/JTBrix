@@ -2,7 +2,7 @@
 
 __author__ = """Amid Nayerhoda"""
 __email__ = 'Nayerhoda@infn.it'
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 
 
 # Import core functionality to the top level

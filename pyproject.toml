@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "JTBrix"
-version = "0.0.3"
+version = "0.0.5"
 description = "JTBrix is a modular Python package for running behavioral experiments in psychology."
 readme = "README.rst"
 authors = [
