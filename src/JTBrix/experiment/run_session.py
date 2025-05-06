@@ -9,9 +9,10 @@ from JTBrix.utils import find_free_port
 from JTBrix import screen_config
 from JTBrix.utils.results import get_combined_results
 import time
+from JTBrix.app import app  
 
-jtbrix_root = Path(JTBrix.__file__).parent
-template_path = jtbrix_root / "templates"  # Now points to JTBrix/templates
+# jtbrix_root = Path(JTBrix.__file__).parent
+# template_path = jtbrix_root / "templates"  # Now points to JTBrix/templates
 
 import threading
 
@@ -19,9 +20,9 @@ def run_entire_test_config(config: dict, static_folder: str, timeout: int = 600)
     screen_config.flow_config = config
     submitted_results.clear()
 
-    app = Flask(__name__, static_folder=os.path.abspath(static_folder), template_folder=template_path)
-    app.register_blueprint(ui)
-    app.register_blueprint(screens)
+    # app = Flask(__name__, static_folder=os.path.abspath(static_folder), template_folder=template_path)
+    # app.register_blueprint(ui)
+    # app.register_blueprint(screens)
 
     port = find_free_port()
 
