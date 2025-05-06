@@ -163,3 +163,113 @@
       - 433
       - 1149
       popup: Sad4
+- new_entry:
+    participant_first_name: Amid
+    participant_surename_name: Amid
+    age: 0
+    country: France
+    native_language: 'Yes'
+    experiment_start: '2025-05-06 22:24:58'
+    experiment_duration_sec: 68
+    completed: true
+    execution_order:
+    - '1'
+    - '4'
+    - '3'
+    - '2'
+    blocks:
+    - SetCode: '1'
+      answers:
+      - Banana1
+      - Ford1
+      - Rome1
+      times:
+      - 1701
+      - 700
+      - 976
+      popup: Sad1
+    - SetCode: '2'
+      answers:
+      - Banana2
+      - Ford2
+      - Paris2
+      times:
+      - 1566
+      - 412
+      - 791
+      popup: Sad2
+    - SetCode: '3'
+      answers:
+      - Banana3
+      - Ford3
+      - London3
+      times:
+      - 903
+      - 561
+      - 777
+      popup: Sad3
+    - SetCode: '4'
+      answers:
+      - Apple4
+      - Tesla4
+      - Padova4
+      times:
+      - 1101
+      - 682
+      - 1034
+      popup: Sad4
+- new_entry:
+    participant_first_name: fff
+    participant_surename_name: etet
+    age: 56
+    country: France
+    native_language: 'Yes'
+    experiment_start: '2025-05-06 22:26:30'
+    experiment_duration_sec: 59
+    completed: true
+    execution_order:
+    - '3'
+    - '2'
+    - '1'
+    - '4'
+    blocks:
+    - SetCode: '1'
+      answers:
+      - Banana1
+      - Ford1
+      - Rome1
+      times:
+      - 777
+      - 735
+      - 1102
+      popup: Sad1
+    - SetCode: '2'
+      answers:
+      - Banana2
+      - Ford2
+      - Paris2
+      times:
+      - 2323
+      - 727
+      - 962
+      popup: Sad2
+    - SetCode: '3'
+      answers:
+      - Banana3
+      - Ford3
+      - London3
+      times:
+      - 1309
+      - 648
+      - 1043
+      popup: Sad3
+    - SetCode: '4'
+      answers:
+      - Banana4
+      - Ford4
+      - Berlin4
+      times:
+      - 1035
+      - 697
+      - 794
+      popup: Sad4

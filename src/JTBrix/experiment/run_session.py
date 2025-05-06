@@ -9,7 +9,14 @@ from JTBrix.utils import find_free_port
 from JTBrix import screen_config
 from JTBrix.utils.results import get_combined_results
 import time
-from JTBrix.app import app  
+#from JTBrix.app import app  
+
+
+
+def get_app():
+    from JTBrix.app import app
+    return app
+
 
 # jtbrix_root = Path(JTBrix.__file__).parent
 # template_path = jtbrix_root / "templates"  # Now points to JTBrix/templates
@@ -25,8 +32,9 @@ def run_entire_test_config(config: dict, static_folder: str, timeout: int = 600)
     # app.register_blueprint(screens)
 
     port = find_free_port()
-
+    print (f"Using port {port} for Flask app")  
     def run_app():
+        app = get_app()
         app.run(port=port, debug=False, use_reloader=False)
 
     thread = threading.Thread(target=run_app)
