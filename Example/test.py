@@ -1,6 +1,6 @@
 from JTBrix import run_test
 from JTBrix.utils.results import build_full_structured_result
-
+from JTBrix.io.saving import save_structured_output
 
 results, order = run_test("../src/JTBrix/data/config.yml", "../src/JTBrix/data/static/", timeout=300) 
 print("Combined results:", results)
@@ -12,3 +12,7 @@ print("Structured output keys:", structured_output.keys())
 print("Structured output values:", structured_output.values())
 
 
+
+
+# Save to txt, yaml, csv, json
+save_structured_output(structured_output, save_path="../src/JTBrix/data/results/", name="Test_data")
