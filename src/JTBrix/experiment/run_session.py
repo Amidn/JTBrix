@@ -23,7 +23,7 @@ def get_app():
 
 import threading
 
-def run_entire_test_config(config: dict, static_folder: str, timeout: int = 600) -> dict:
+def run_entire_test_config(config: dict, static_folder: str, timeout: int = 600, port: int = 5000) -> dict:
     screen_config.flow_config = config
     submitted_results.clear()
 
@@ -31,7 +31,7 @@ def run_entire_test_config(config: dict, static_folder: str, timeout: int = 600)
     # app.register_blueprint(ui)
     # app.register_blueprint(screens)
 
-    port = find_free_port()
+    #port = find_free_port()
     print (f"Using port {port} for Flask app")  
     def run_app():
         app = get_app()
