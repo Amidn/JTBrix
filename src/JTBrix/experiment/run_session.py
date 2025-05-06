@@ -32,7 +32,7 @@ def run_entire_test_config(config: dict, static_folder: str, timeout: int = 600)
     # app.register_blueprint(screens)
 
     #port = find_free_port()
-    port = 5500
+    port = 5600
     print (f"Using port {port} for Flask app")  
     def run_app():
         app = get_app()

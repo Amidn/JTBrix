@@ -34,7 +34,7 @@ app.register_blueprint(screens)
 # ✅ Add /run_experiment route
 @app.route("/run_experiment")
 def run_experiment():
-    results, order = run_test(config_path, static_path , timeout=300, port =5500)
+    results, order = run_test(config_path, static_path , timeout=300 )
     structured_output = build_full_structured_result(results, config_path, execution_order=order)
     save_structured_output(structured_output, save_path=results_path, name="Test_data")
     return jsonify({"status": "success", "order": order, "summary": structured_output})
