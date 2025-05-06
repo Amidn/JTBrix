@@ -51,7 +51,7 @@ experiment_content:
       image: "2.jpeg"
     - type: "question"
       prompt: "Pick a city1:"
-      options: ["Padova1", "Bari1"]
+      options: ["Padova1", "Rome1"]
       colors: ["navy", "olive"]
       image: "3.jpeg"
     - type: "popup"
@@ -74,7 +74,7 @@ experiment_content:
       image: "2.jpeg"
     - type: "question"
       prompt: "Pick a city2:"
-      options: ["Padova2", "Bari2"]
+      options: ["Padova2", "Paris2"]
       colors: ["navy", "olive"]
       image: "3.jpeg"
     - type: "popup"
@@ -97,7 +97,7 @@ experiment_content:
       image: "2.jpeg"
     - type: "question"
       prompt: "Pick a city3:"
-      options: ["Padova3", "Bari3"]
+      options: ["Padova3", "London3"]
       colors: ["navy", "olive"]
       image: "3.jpeg"
     - type: "popup"
@@ -120,7 +120,7 @@ experiment_content:
       image: "2.jpeg"
     - type: "question"
       prompt: "Pick a city4:"
-      options: ["Padova4", "Bari4"]
+      options: ["Padova4", "Berlin4"]
       colors: ["navy", "olive"]
       image: "3.jpeg"
     - type: "popup"
