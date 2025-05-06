@@ -20,17 +20,10 @@ app = Flask(__name__, static_folder=static_path, template_folder=template_path)
 app.register_blueprint(ui)
 app.register_blueprint(screens)
 
-# Add /run_experiment route
-# @app.route("/run_experiment")
-# def run_experiment():
-#     results, order = run_test("data/config.yml", "data/static/", timeout=300)
-#     structured_output = build_full_structured_result(results, "data/config.yml", execution_order=order)
-#     save_structured_output(structured_output, save_path="data/results/", name="Test_data")
-#     return jsonify({"status": "success", "order": order, "summary": structured_output})
-
-
-if __name__ == "__main__":
+# ✅ Add /run_experiment route
+@app.route("/run_experiment")
+def run_experiment():
     results, order = run_test("data/config.yml", "data/static/", timeout=300)
     structured_output = build_full_structured_result(results, "data/config.yml", execution_order=order)
     save_structured_output(structured_output, save_path="data/results/", name="Test_data")
-    
+    return jsonify({"status": "success", "order": order, "summary": structured_output})
