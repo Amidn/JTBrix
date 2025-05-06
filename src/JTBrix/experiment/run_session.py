@@ -7,6 +7,7 @@ import JTBrix
 from JTBrix.questionnaire.screens import screens
 from JTBrix.utils import find_free_port
 from JTBrix import screen_config
+from JTBrix.utils.results import get_combined_results
 
 jtbrix_root = Path(JTBrix.__file__).parent
 template_path = jtbrix_root / "templates"  # Now points to JTBrix/templates
@@ -25,4 +26,4 @@ def run_entire_test_config(config: dict, static_folder: str):
 
     app.run(port=port, debug=True)
 
-    return submitted_results
+    return get_combined_results(submitted_results)

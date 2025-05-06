@@ -1,5 +1,9 @@
 from flask import Blueprint, request, render_template_string
 import json
+from JTBrix.utils.results import get_combined_results
+
+
+
 
 ui = Blueprint("ui", __name__)
 submitted_results = []
@@ -277,3 +281,12 @@ def view_results():
 @ui.route("/view_aggregated_results")
 def view_aggregated_results():
     return "<pre>" + json.dumps(aggregated_results, indent=2) + "</pre>"
+
+
+
+
+
+@ui.route("/get_combined_dict")
+def get_combined_dict():
+    combined = get_combined_results(submitted_results)
+    return "<pre>" + json.dumps(combined, indent=2) + "</pre>"
