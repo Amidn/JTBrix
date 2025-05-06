@@ -1,0 +1,9 @@
+test_id,participant_first_name,participant_surename_name,age,country,native_language,experiment_start,experiment_duration_sec,completed,execution_order,SetCode,Answer1,Answer2,Answer3,Time1,Time2,Time3,Popup
+1,John,McCarthy,66,Germany,Yes,2025-05-06 15:10:57,87,True,1 | 2 | 3 | 4,1,Banana1,Ford1,Bari1,1069,633,896,Sad1
+1,John,McCarthy,66,Germany,Yes,2025-05-06 15:10:57,87,True,1 | 2 | 3 | 4,2,Banana2,Ford2,Bari2,713,535,804,Sad2
+1,John,McCarthy,66,Germany,Yes,2025-05-06 15:10:57,87,True,1 | 2 | 3 | 4,3,Banana3,Ford3,Bari3,935,482,765,Sad3
+1,John,McCarthy,66,Germany,Yes,2025-05-06 15:10:57,87,True,1 | 2 | 3 | 4,4,Banana4,Ford4,Bari4,1006,449,845,Sad4
+2,Albert,Einstein,52,Germany,Yes,2025-05-06 15:12:46,66,True,3 | 1 | 2 | 4,1,Banana1,Ford1,Bari1,883,446,712,Sad1
+2,Albert,Einstein,52,Germany,Yes,2025-05-06 15:12:46,66,True,3 | 1 | 2 | 4,2,Banana2,Ford2,Bari2,700,449,712,Sad2
+2,Albert,Einstein,52,Germany,Yes,2025-05-06 15:12:46,66,True,3 | 1 | 2 | 4,3,Banana3,Ford3,Bari3,1376,547,831,Sad3
+2,Albert,Einstein,52,Germany,Yes,2025-05-06 15:12:46,66,True,3 | 1 | 2 | 4,4,Banana4,Ford4,Bari4,999,450,683,Sad4

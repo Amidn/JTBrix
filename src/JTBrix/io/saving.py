@@ -39,21 +39,39 @@ def save_structured_output(structured_output: dict, save_path: str, name: str):
 
     # --- YAML ---
     yml_path = os.path.join(save_path, f"{name}.yml")
+    new_entry = {"new_entry": structured_output}
     if not os.path.exists(yml_path):
-        with open(yml_path, "w") as f:
-            yaml.dump(structured_output, f, sort_keys=False)
+        with open(yml_path, "w") as f_yml:
+            yaml.dump([new_entry], f_yml, sort_keys=False)
     else:
-        with open(yml_path, "a") as f_yml:
-            yaml.dump(structured_output, f_yml, sort_keys=False)
-            f_yml.write("\n")
+        with open(yml_path, "r") as f_yml:
+            try:
+                existing_data = yaml.safe_load(f_yml) or []
+                if not isinstance(existing_data, list):
+                    existing_data = [existing_data]
+            except yaml.YAMLError:
+                existing_data = []
+
+        existing_data.append(new_entry)
+        with open(yml_path, "w") as f_yml:
+            yaml.dump(existing_data, f_yml, sort_keys=False)
 
     # --- CSV ---
     csv_path = os.path.join(save_path, f"{name}.csv")
     csv_exists = os.path.exists(csv_path)
+    test_id = 1
+
+    if csv_exists:
+        with open(csv_path, "r") as f_csv:
+            reader = csv.reader(f_csv)
+            next(reader, None)  # skip header
+            test_id = sum(1 for _ in reader) // max(len(structured_output["blocks"]), 1) + 1
+
     with open(csv_path, "a", newline='') as f_csv:
         writer = csv.writer(f_csv)
         if not csv_exists:
             writer.writerow([
+                "test_id",
                 "participant_first_name", "participant_surename_name", "age",
                 "country", "native_language", "experiment_start", "experiment_duration_sec",
                 "completed", "execution_order", "SetCode",
@@ -62,6 +80,7 @@ def save_structured_output(structured_output: dict, save_path: str, name: str):
             ])
         for block in structured_output["blocks"]:
             row = [
+                test_id,
                 structured_output.get("participant_first_name", ""),
                 structured_output.get("participant_surename_name", ""),
                 structured_output.get("age", ""),
