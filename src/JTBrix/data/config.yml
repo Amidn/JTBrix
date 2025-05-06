@@ -78,16 +78,11 @@ experiment_content:
       colors: ["navy", "olive"]
       image: "3.jpeg"
     - type: "popup"
-      question: "How do you feel?"
-      options: ["Happy", "Neutral", "Sad"]
+      question: "How do you feel2?"
+      options: ["Happy2", "Neutral2", "Sad2"]
       colors: ["green", "gray", "red"]
 
   - - SetCode: "3"
-#    - type: "consent"
-#      main_text: "ready?"
-#      checkbox_text: "I am ready"
-#      button_text: "Begin1"
-#      button_color: "#28a745"
     - type: "video"
       video_filename: "3.mp4"
     - type: "question"
@@ -100,8 +95,8 @@ experiment_content:
       options: ["Tesla3", "Ford3"]
       colors: ["blue", "gray"]
       image: "2.jpeg"
-    - type: "question3"
-      prompt: "Pick a city:"
+    - type: "question"
+      prompt: "Pick a city3:"
       options: ["Padova3", "Bari3"]
       colors: ["navy", "olive"]
       image: "3.jpeg"
@@ -111,11 +106,6 @@ experiment_content:
       colors: ["green", "gray", "red"]
 
   - - SetCode: "4"
-#    - type: "consent"
-#      main_text: "Tired?"
-#      checkbox_text: "I am not!!!"
-#      button_text: "Begin1"
-#      button_color: "#28a745"
     - type: "video"
       video_filename: "4.mp4"
     - type: "question"
@@ -137,14 +127,3 @@ experiment_content:
       question: "How do you feel4?"
       options: ["Happy4", "Neutral4", "Sad4"]
       colors: ["green", "gray", "red"]
-
-
-
-
-
-
-
-
-
-
-
