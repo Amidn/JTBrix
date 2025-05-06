@@ -45,7 +45,8 @@ def experiment():
                 popup_results: [],
                 text_input_results: [],
                 dob_results: [],
-                dropdown_results: []
+                dropdown_results: [],
+                finished: false
             };
             let popupSubmitted = false;
 
@@ -105,10 +106,15 @@ def experiment():
                     document.exitFullscreen();
                     
                     // Submit final results
+                    results.finished = true;
                     const fullResults = {
-                        answers: results.questions_answers,
-                        times: results.questions_times,
-                        popup_results: results.popup_results
+                        questions_answers: results.questions_answers,
+                        questions_times: results.questions_times,
+                        popup_results: results.popup_results,
+                        text_input_results: results.text_input_results,
+                        dob_results: results.dob_results,
+                        dropdown_results: results.dropdown_results,
+                        finished: results.finished
                     };
                     fetch("/submit_results", {
                         method: "POST",
@@ -144,10 +150,15 @@ def experiment():
                         loadScreen(`/screen/text_input/${stepIndex}`);
                         break;
                     case "end":
+                        results.finished = true;
                         const fullResults = {
-                            answers: results.questions_answers,
-                            times: results.questions_times,
-                            popup_results: results.popup_results
+                            questions_answers: results.questions_answers,
+                            questions_times: results.questions_times,
+                            popup_results: results.popup_results,
+                            text_input_results: results.text_input_results,
+                            dob_results: results.dob_results,
+                            dropdown_results: results.dropdown_results,
+                            finished: results.finished
                         };
                         const endHTML = `
                             <div style="display: flex; justify-content: center; align-items: center; 
@@ -192,7 +203,8 @@ def experiment():
                     popup_results: results.popup_results,
                     text_input_results: results.text_input_results,
                     dob_results: results.dob_results,
-                    dropdown_results: results.dropdown_results
+                    dropdown_results: results.dropdown_results,
+                    finished: results.finished
                 };
 
                 fetch("/submit_results", {
@@ -202,6 +214,7 @@ def experiment():
                 }).then(() => {
                     const step = flow[stepIndex + 1];  // peek ahead
                     if (step && step.type === "end") {
+                        results.finished = true;
                         stepIndex++;  // advance manually
                         const endHTML = `
                             <div style="display: flex; justify-content: center; align-items: center; 
@@ -226,13 +239,38 @@ def experiment():
     </html>
     """, flow_json=flow_json)
 
+aggregated_results = {
+    "questions_answers": [],
+    "questions_times": [],
+    "popup_results": [],
+    "text_input_results": [],
+    "dob_results": [],
+    "dropdown_results": [],
+    "finished_flags": []
+}
+
 @ui.route("/submit_results", methods=["POST"])
 def submit_results():
     data = request.get_json()
     submitted_results.append(data)
+
+    # Update the live aggregated state
+    for key in ["questions_answers", "questions_times", "popup_results",
+                "text_input_results", "dob_results", "dropdown_results"]:
+        if key in data:
+            aggregated_results[key].extend(data[key])
+
+    # Handle finished flag separately
+    aggregated_results["finished_flags"].append(data.get("finished", False))
+
     print("✅ Results submitted:", json.dumps(data, indent=2))
     return "", 204
 
 @ui.route("/view_results")
 def view_results():
     return "<pre>" + json.dumps(submitted_results, indent=2) + "</pre>"
+
+
+@ui.route("/view_aggregated_results")
+def view_aggregated_results():
+    return "<pre>" + json.dumps(aggregated_results, indent=2) + "</pre>"
