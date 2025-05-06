@@ -10,7 +10,12 @@ experiment_content:
       button_text: "Begin1"
       button_color: "#28a745"
     - type: "text_input"
-      id: "participant_name"
+      id: "participant_first_name"
+      prompt: "Please enter your name:"
+      placeholder: "Your full name"
+      button_text: "Continue"
+    - type: "text_input"
+      id: "participant_surename_name"
       prompt: "Please enter your name:"
       placeholder: "Your full name"
       button_text: "Continue"
@@ -19,6 +24,9 @@ experiment_content:
     - "type": "dropdown"
       "prompt": "What is your country of residence?"
       "options": ["Italy", "Germany", "France", "Other"]
+    - "type": "dropdown"
+      "prompt": "Is Englidh your native language?"
+      "options": ["Yes", "No"]
 
   # This Block and its content will be at the end of the test
   - - type: "end"
@@ -32,46 +40,41 @@ experiment_content:
     - type: "video"
       video_filename: "1.mp4"
     - type: "question"
-      prompt: "Pick a fruit:"
-      options: ["Apple", "Banana"]
+      prompt: "Pick a fruit1:"
+      options: ["Apple1", "Banana1"]
       colors: ["red", "yellow"]
       image: "1.jpeg"
     - type: "question"
-      prompt: "Pick a car:"
-      options: ["Tesla", "Ford"]
+      prompt: "Pick a car1:"
+      options: ["Tesla1", "Ford1"]
       colors: ["blue", "gray"]
       image: "2.jpeg"
     - type: "question"
-      prompt: "Pick a city:"
-      options: ["Padova", "Bari"]
+      prompt: "Pick a city1:"
+      options: ["Padova1", "Bari1"]
       colors: ["navy", "olive"]
       image: "3.jpeg"
     - type: "popup"
-      question: "How do you feel?"
-      options: ["Happy", "Neutral", "Sad"]
+      question: "How do you feel1?"
+      options: ["Happy1", "Neutral1", "Sad1"]
       colors: ["green", "gray", "red"]
 
   - - SetCode: "2"
-#    - type: "consent"
-#      main_text: "ready?"
-#      checkbox_text: "I am ready"
-#      button_text: "Begin1"
-#      button_color: "#28a745"
     - type: "video"
       video_filename: "2.mp4"
     - type: "question"
-      prompt: "Pick a fruit:"
-      options: ["Apple", "Banana"]
+      prompt: "Pick a fruit2:"
+      options: ["Apple2", "Banana2"]
       colors: ["red", "yellow"]
       image: "1.jpeg"
     - type: "question"
-      prompt: "Pick a car:"
-      options: ["Tesla", "Ford"]
+      prompt: "Pick a car2:"
+      options: ["Tesla2", "Ford2"]
       colors: ["blue", "gray"]
       image: "2.jpeg"
     - type: "question"
-      prompt: "Pick a city:"
-      options: ["Padova", "Bari"]
+      prompt: "Pick a city2:"
+      options: ["Padova2", "Bari2"]
       colors: ["navy", "olive"]
       image: "3.jpeg"
     - type: "popup"
@@ -88,23 +91,23 @@ experiment_content:
     - type: "video"
       video_filename: "3.mp4"
     - type: "question"
-      prompt: "Pick a fruit:"
-      options: ["Apple", "Banana"]
+      prompt: "Pick a fruit3:"
+      options: ["Apple3", "Banana3"]
       colors: ["red", "yellow"]
       image: "1.jpeg"
     - type: "question"
-      prompt: "Pick a car:"
-      options: ["Tesla", "Ford"]
+      prompt: "Pick a car3:"
+      options: ["Tesla3", "Ford3"]
       colors: ["blue", "gray"]
       image: "2.jpeg"
-    - type: "question"
+    - type: "question3"
       prompt: "Pick a city:"
-      options: ["Padova", "Bari"]
+      options: ["Padova3", "Bari3"]
       colors: ["navy", "olive"]
       image: "3.jpeg"
     - type: "popup"
-      question: "How do you feel?"
-      options: ["Happy", "Neutral", "Sad"]
+      question: "How do you feel3?"
+      options: ["Happy3", "Neutral3", "Sad3"]
       colors: ["green", "gray", "red"]
 
   - - SetCode: "4"
@@ -116,21 +119,32 @@ experiment_content:
     - type: "video"
       video_filename: "4.mp4"
     - type: "question"
-      prompt: "Pick a fruit:"
-      options: ["Apple", "Banana"]
+      prompt: "Pick a fruit:4"
+      options: ["Apple4", "Banana4"]
       colors: ["red", "yellow"]
       image: "1.jpeg"
     - type: "question"
-      prompt: "Pick a car:"
-      options: ["Tesla", "Ford"]
+      prompt: "Pick a car4:"
+      options: ["Tesla4", "Ford4"]
       colors: ["blue", "gray"]
       image: "2.jpeg"
     - type: "question"
-      prompt: "Pick a city:"
-      options: ["Padova", "Bari"]
+      prompt: "Pick a city4:"
+      options: ["Padova4", "Bari4"]
       colors: ["navy", "olive"]
       image: "3.jpeg"
     - type: "popup"
-      question: "How do you feel?"
-      options: ["Happy", "Neutral", "Sad"]
+      question: "How do you feel4?"
+      options: ["Happy4", "Neutral4", "Sad4"]
       colors: ["green", "gray", "red"]
+
+
+
+
+
+
+
+
+
+
+

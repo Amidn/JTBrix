@@ -3,7 +3,7 @@ from JTBrix.screen_config import flow_config
 from JTBrix.experiment.run_session import run_entire_test_config
 from JTBrix.utils.config import read_experiment_config
 
-def run_test(config_path: str, static_folder: str) -> Tuple[dict, list]:
+def run_test(config_path: str, static_folder: str, timeout: int = 600) -> Tuple[dict, list]:
     """
     Run an experiment from a YAML configuration file
     
@@ -28,7 +28,6 @@ def run_test(config_path: str, static_folder: str) -> Tuple[dict, list]:
     flow_config.extend(config)
     
     # Run experiment and return results
-    results = run_entire_test_config(config, static_folder=static_folder)
+    results = run_entire_test_config(config, static_folder=static_folder, timeout=timeout)
     return results, order
-
 

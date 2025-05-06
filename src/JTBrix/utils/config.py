@@ -84,7 +84,40 @@ def read_experiment_config(yaml_path: str) -> Tuple[List[Dict], List[str]]:
     
     return final_config, selected_order
 
-# Example usage:
-# config, order = load_experiment_config("experiment.yml")
-# print("Generated Config:", config)
-# print("Block Order:", order)
+
+
+
+def load_experiment_content_by_block(yaml_path: str) -> dict:
+    """
+    Loads and separates the experiment content into three parts:
+    - 'begin': the initial block (type == 'Begin')
+    - 'end': the final block (type == 'end')
+    - 'setcodes': dict mapping SetCode to its block
+
+    Returns:
+        A dictionary with 'begin', 'end', and 'setcodes' keys.
+    """
+    with open(yaml_path, 'r') as file:
+        data = yaml.safe_load(file)
+
+    experiment_content = data.get('experiment_content', [])
+
+    result = {
+        "begin": [],
+        "end": [],
+        "setcodes": {}
+    }
+
+    for block in experiment_content:
+        if not block:
+            continue
+        first = block[0]
+        if isinstance(first, dict) and first.get("type") == "Begin":
+            result["begin"] = block[1:]
+        elif isinstance(first, dict) and first.get("type") == "end":
+            result["end"] = block[1:]
+        elif isinstance(first, dict) and "SetCode" in first:
+            setcode = str(first["SetCode"])
+            result["setcodes"][setcode] = block[1:]
+
+    return result
