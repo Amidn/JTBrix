@@ -27,8 +27,9 @@
           response: input.value.trim(),
         }),
       }).then(() => {
-        // Trigger transition to next screen
-        window.parent.dispatchEvent(new Event("nextScreen"));
+        window.parent.postMessage({type: "nextStep",
+                                   answer: input.value.trim(),
+                                   time: performance.now()}, "*");
       });
     });
   </script>
