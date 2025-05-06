@@ -197,6 +197,10 @@ def experiment():
 
                 results.popup_results.push(answer);
 
+                if (flow[stepIndex + 1] && flow[stepIndex + 1].type === "end") {
+                    results.finished = true;
+                }
+
                 const fullResults = {
                     questions_answers: results.questions_answers,
                     questions_times: results.questions_times,
@@ -214,7 +218,6 @@ def experiment():
                 }).then(() => {
                     const step = flow[stepIndex + 1];  // peek ahead
                     if (step && step.type === "end") {
-                        results.finished = true;
                         stepIndex++;  // advance manually
                         const endHTML = `
                             <div style="display: flex; justify-content: center; align-items: center; 
