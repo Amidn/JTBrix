@@ -5,7 +5,7 @@
 import pytest
 
 
-from JTBrix import JTBrix
+from JTBrix import JTBrix1
 
 
 @pytest.fixture

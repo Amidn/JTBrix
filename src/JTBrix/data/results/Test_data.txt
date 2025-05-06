@@ -2,95 +2,19 @@
 
 --- New Entry ---
 {
-  "participant_first_name": "John",
-  "participant_surename_name": "McCarthy",
-  "age": 66,
-  "country": "Germany",
-  "native_language": "Yes",
-  "experiment_start": "2025-05-06 15:10:57",
-  "experiment_duration_sec": 87,
-  "completed": true,
-  "execution_order": [
-    "1",
-    "2",
-    "3",
-    "4"
-  ],
-  "blocks": [
-    {
-      "SetCode": "1",
-      "answers": [
-        "Banana1",
-        "Ford1",
-        "Bari1"
-      ],
-      "times": [
-        1069,
-        633,
-        896
-      ],
-      "popup": "Sad1"
-    },
-    {
-      "SetCode": "2",
-      "answers": [
-        "Banana2",
-        "Ford2",
-        "Bari2"
-      ],
-      "times": [
-        713,
-        535,
-        804
-      ],
-      "popup": "Sad2"
-    },
-    {
-      "SetCode": "3",
-      "answers": [
-        "Banana3",
-        "Ford3",
-        "Bari3"
-      ],
-      "times": [
-        935,
-        482,
-        765
-      ],
-      "popup": "Sad3"
-    },
-    {
-      "SetCode": "4",
-      "answers": [
-        "Banana4",
-        "Ford4",
-        "Bari4"
-      ],
-      "times": [
-        1006,
-        449,
-        845
-      ],
-      "popup": "Sad4"
-    }
-  ]
-}
-
---- New Entry ---
-{
   "participant_first_name": "Albert",
   "participant_surename_name": "Einstein",
-  "age": 52,
+  "age": 81,
   "country": "Germany",
   "native_language": "Yes",
-  "experiment_start": "2025-05-06 15:12:46",
-  "experiment_duration_sec": 66,
+  "experiment_start": "2025-05-06 15:48:56",
+  "experiment_duration_sec": 76,
   "completed": true,
   "execution_order": [
+    "4",
     "3",
     "1",
-    "2",
-    "4"
+    "2"
   ],
   "blocks": [
     {
@@ -98,12 +22,12 @@
       "answers": [
         "Banana1",
         "Ford1",
-        "Bari1"
+        "Rome1"
       ],
       "times": [
-        883,
-        446,
-        712
+        982,
+        614,
+        799
       ],
       "popup": "Sad1"
     },
@@ -112,12 +36,12 @@
       "answers": [
         "Banana2",
         "Ford2",
-        "Bari2"
+        "Paris2"
       ],
       "times": [
-        700,
-        449,
-        712
+        861,
+        599,
+        949
       ],
       "popup": "Sad2"
     },
@@ -125,29 +49,29 @@
       "SetCode": "3",
       "answers": [
         "Banana3",
-        "Ford3",
-        "Bari3"
+        "Tesla3",
+        "London3"
       ],
       "times": [
-        1376,
-        547,
-        831
+        2326,
+        725,
+        978
       ],
-      "popup": "Sad3"
+      "popup": "Happy3"
     },
     {
       "SetCode": "4",
       "answers": [
         "Banana4",
-        "Ford4",
-        "Bari4"
+        "Tesla4",
+        "Padova4"
       ],
       "times": [
-        999,
-        450,
-        683
+        1049,
+        686,
+        1082
       ],
-      "popup": "Sad4"
+      "popup": "Happy4"
     }
   ]
 }
