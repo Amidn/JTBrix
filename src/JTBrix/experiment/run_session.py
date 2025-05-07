@@ -32,16 +32,16 @@ def run_entire_test_config(config: dict, static_folder: str, timeout: int = 600)
     # app.register_blueprint(screens)
 
     #port = find_free_port()
-    port = 5600
-    print (f"Using port {port} for Flask app")  
-    def run_app():
-        app = get_app()
-        app.run(port=port, debug=False, use_reloader=False)
+    # port = 5600
+    # print (f"Using port {port} for Flask app")  
+    # def run_app():
+    #     app = get_app()
+    #     app.run(port=port, debug=False, use_reloader=False)
 
-    thread = threading.Thread(target=run_app)
-    thread.daemon = True
-    thread.start()
-    print (f"Flask app running on port {port}")
+    # thread = threading.Thread(target=run_app)
+    # thread.daemon = True
+    # thread.start()
+    #print (f"Flask app running on port {port}")
     time.sleep(1)
     start_timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
     webbrowser.open(f"http://127.0.0.1:{port}/experiment")

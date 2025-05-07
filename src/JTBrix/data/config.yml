@@ -25,7 +25,10 @@ experiment_content:
       "prompt": "What is your country of residence?"
       "options": ["Italy", "Germany", "France", "Other"]
     - "type": "dropdown"
-      "prompt": "Is Englidh your native language?"
+      "prompt": "Is English your native language?"
+      "options": ["Yes", "No"]
+    - "type": "dropdown"
+      "prompt": "Is English your native language?"
       "options": ["Yes", "No"]
 
   # This Block and its content will be at the end of the test
@@ -40,7 +43,7 @@ experiment_content:
     - type: "video"
       video_filename: "1.mp4"
     - type: "question"
-      prompt: "Pick a fruit1:"
+      prompt: "Pick a fruit:"
       options: ["Apple1", "Banana1"]
       colors: ["red", "yellow"]
       image: "1.jpeg"
