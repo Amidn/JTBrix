@@ -42,7 +42,7 @@ if __name__ == "__main__":
     screen_config.flow_config = config
     submitted_results.clear()
 
-    port = find_free_port()
+
     # Create the app
     app = Flask(__name__, static_folder=static_path, template_folder=template_path)
     app.register_blueprint(ui)
@@ -51,6 +51,7 @@ if __name__ == "__main__":
         app.run(port=port, debug=False, use_reloader=False)
     
     if sys in ("macOS", "Windows"):
+        port = find_free_port()
         print ("Running on local machine")
         thread = threading.Thread(target=run_app)
         thread.daemon = True
@@ -63,22 +64,60 @@ if __name__ == "__main__":
             if any(entry.get("finished") for entry in submitted_results):
                 break
             time.sleep(1)
+                # Collect and return
+        duration_seconds = int(time.time() - start_time)
+        results = get_combined_results(submitted_results)
+        results["experiment_start"] = start_timestamp
+        results["experiment_duration_sec"] = duration_seconds
 
-    # Collect and return
-    duration_seconds = int(time.time() - start_time)
-    results = get_combined_results(submitted_results)
-    results["experiment_start"] = start_timestamp
-    results["experiment_duration_sec"] = duration_seconds
+        
+        print("Combined results:", results)
+        print("Execution order:", order)
+
+        structured_output = build_full_structured_result(results, config_path, execution_order=order)
+        print ("Structured output:", structured_output)
+        print("Structured output keys:", structured_output.keys())
+        print("Structured output values:", structured_output.values())
+        save_structured_output(structured_output, save_path=results_path, name="Test_data")
+
+
+
+    if sys == "Google Colab":
+        port = find_free_port()
+        print ("Running on Google Colab")
+        from pyngrok import ngrok
+        ngrok.set_auth_token("2wjfqkOLdNnNEdW3TogJZxdKLNA_82gyNo4zcMGMUnTrFGnQP")
+        public_url = ngrok.connect(port)
+        print(f"🌍 App is publicly available at: {public_url}/experiment")
+
+        thread = threading.Thread(target=run_app)
+        thread.daemon = True
+        thread.start()
+        start_timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        print("Waiting for experiment to finish...")
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            if any(entry.get("finished") for entry in submitted_results):
+                break
+            time.sleep(1)
+                # Collect and return
+        duration_seconds = int(time.time() - start_time)
+        results = get_combined_results(submitted_results)
+        results["experiment_start"] = start_timestamp
+        results["experiment_duration_sec"] = duration_seconds
+
+        
+        print("Combined results:", results)
+        print("Execution order:", order)
+
+        structured_output = build_full_structured_result(results, config_path, execution_order=order)
+        print ("Structured output:", structured_output)
+        print("Structured output keys:", structured_output.keys())
+        print("Structured output values:", structured_output.values())
+        save_structured_output(structured_output, save_path=results_path, name="Test_data")
 
     
-    print("Combined results:", results)
-    print("Execution order:", order)
 
-    structured_output = build_full_structured_result(results, config_path, execution_order=order)
-    print ("Structured output:", structured_output)
-    print("Structured output keys:", structured_output.keys())
-    print("Structured output values:", structured_output.values())
-    save_structured_output(structured_output, save_path=results_path, name="Test_data")
 
 
 
