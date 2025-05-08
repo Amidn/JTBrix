@@ -56,8 +56,7 @@ def run_test_local(app, config, order, timeout= 600 ) :
 
 
 def run_test_colab(app, config, order, timeout= 600 ):
-    def run_app():
-        app.run(port=port, debug=False, use_reloader=False)
+    run_app=  app.run(port=port, debug=False, use_reloader=False)
 
     port = find_free_port()
     print ("Running on Google Colab")
