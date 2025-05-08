@@ -1,33 +1,103 @@
+import os
+import time
+import threading
+import webbrowser
+from pathlib import Path
 from typing import Tuple
+
 from JTBrix.screen_config import flow_config
-from JTBrix.experiment.run_session import run_entire_test_config
+from JTBrix.ui.main import ui, submitted_results
 from JTBrix.utils.config import read_experiment_config
+from JTBrix.utils import find_free_port 
+from JTBrix.utils.results import build_full_structured_result, get_combined_results
+from JTBrix.io.saving import save_structured_output
+from JTBrix.utils.paths import get_project_paths
 
-def run_test(config_path: str, static_folder: str, timeout: int = 600 ) -> Tuple[dict, list]:
-    """
-    Run an experiment from a YAML configuration file
-    
-    Args:
-        config_path (str): Path to experiment YAML config file
-        static_folder (str): Path to static assets directory
-        
-    Returns:
-        Tuple[list, list]: 
-            - Experiment results list
-            - Block execution order list
-    """
-    # Load and validate config
-    config, order = read_experiment_config(config_path)
-    
-    print("CONFIG:")
-    print(config)
-    print("\nSELECTED ORDER:", order)
+paths = get_project_paths()
+template_path = paths["template_path"]
+config_path = paths["config_path"]
+static_path = paths["static_path"]
+results_path = paths["results_path"]
 
-    # Update global flow config
-    flow_config.clear()
-    flow_config.extend(config)
+
+
+def run_test_local(app, config, order, timeout= 600 ) :
+    def run_app():
+        app.run(port=port, debug=False, use_reloader=False)
     
-    # Run experiment and return results
-    results = run_entire_test_config(config, static_folder=static_folder, timeout=timeout )
-    return results, order
+    port = find_free_port()
+    print ("Running on local machine")
+    thread = threading.Thread(target=run_app)
+    thread.daemon = True
+    thread.start()
+    start_timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    webbrowser.open(f"http://127.0.0.1:{port}/experiment")
+    print("Waiting for experiment to finish...")
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        if any(entry.get("finished") for entry in submitted_results):
+            break
+        time.sleep(1)
+            # Collect and return
+    duration_seconds = int(time.time() - start_time)
+    results = get_combined_results(submitted_results)
+    results["experiment_start"] = start_timestamp
+    results["experiment_duration_sec"] = duration_seconds
+
+    
+    print("Combined results:", results)
+    print("Execution order:", order)
+
+    structured_output = build_full_structured_result(results, config_path, execution_order=order)
+    print ("Structured output:", structured_output)
+    print("Structured output keys:", structured_output.keys())
+    print("Structured output values:", structured_output.values())
+    save_structured_output(structured_output, save_path=results_path, name="Test_data")
+
+
+def run_test_colab(app, config, order, timeout= 600 ):
+    def run_test():
+        app.run(port=port, debug=False, use_reloader=False)
+
+    port = find_free_port()
+    print ("Running on Google Colab")
+    from pyngrok import ngrok
+    ngrok.set_auth_token("2wjfqkOLdNnNEdW3TogJZxdKLNA_82gyNo4zcMGMUnTrFGnQP")
+    public_url = ngrok.connect(port)
+    print(f"🌍 App is publicly available at: {public_url}/experiment")
+
+    thread = threading.Thread(target=run_app)
+    thread.daemon = True
+    thread.start()
+    start_timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    print("Waiting for experiment to finish...")
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        if any(entry.get("finished") for entry in submitted_results):
+            break
+        time.sleep(1)
+            # Collect and return
+    duration_seconds = int(time.time() - start_time)
+    results = get_combined_results(submitted_results)
+    results["experiment_start"] = start_timestamp
+    results["experiment_duration_sec"] = duration_seconds
+
+    
+    print("Combined results:", results)
+    print("Execution order:", order)
+
+    structured_output = build_full_structured_result(results, config_path, execution_order=order)
+    print ("Structured output:", structured_output)
+    print("Structured output keys:", structured_output.keys())
+    print("Structured output values:", structured_output.values())
+    save_structured_output(structured_output, save_path=results_path, name="Test_data")
+
+
+
+
+
+
+
+
+
 
