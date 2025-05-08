@@ -75,3 +75,79 @@
     }
   ]
 }
+
+--- New Entry ---
+{
+  "participant_first_name": "Testing",
+  "participant_surename_name": "Testing 1",
+  "age": 70,
+  "country": "Germany",
+  "native_language": "Yes",
+  "experiment_start": "2025-05-08 16:54:04",
+  "experiment_duration_sec": 66,
+  "completed": true,
+  "execution_order": [
+    "3",
+    "2",
+    "1",
+    "4"
+  ],
+  "blocks": [
+    {
+      "SetCode": "1",
+      "answers": [
+        "Banana1",
+        "Tesla1",
+        "Rome1"
+      ],
+      "times": [
+        2077,
+        787,
+        966
+      ],
+      "popup": "Happy1"
+    },
+    {
+      "SetCode": "2",
+      "answers": [
+        "Banana2",
+        "Ford2",
+        "Paris2"
+      ],
+      "times": [
+        1294,
+        1129,
+        1026
+      ],
+      "popup": "Sad2"
+    },
+    {
+      "SetCode": "3",
+      "answers": [
+        "Banana3",
+        "Ford3",
+        "London3"
+      ],
+      "times": [
+        1620,
+        842,
+        1090
+      ],
+      "popup": "Sad3"
+    },
+    {
+      "SetCode": "4",
+      "answers": [
+        "Banana4",
+        "Tesla4",
+        "Berlin4"
+      ],
+      "times": [
+        736,
+        598,
+        712
+      ],
+      "popup": "Sad4"
+    }
+  ]
+}
