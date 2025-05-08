@@ -53,3 +53,12 @@ def run():
 
     elif sys == "Google Colab":
        run_test_colab(app,config, order, timeout=600)
+
+
+if __name__ == "__main__": 
+    run()
+
+
+
+
+
