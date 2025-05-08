@@ -56,14 +56,18 @@ def run_test_local(app, config, order, timeout= 600 ) :
 
 
 def run_test_colab(app, config, order, timeout= 600 ):
-    run_app=  app.run(port=port, debug=False, use_reloader=False)
-
+    """
+    Runs the experiment in a Google Colab environment using ngrok to expose the Flask app.
+    """
     port = find_free_port()
     print ("Running on Google Colab")
     from pyngrok import ngrok
     ngrok.set_auth_token("2wjfqkOLdNnNEdW3TogJZxdKLNA_82gyNo4zcMGMUnTrFGnQP")
     public_url = ngrok.connect(port)
     print(f"🌍 App is publicly available at: {public_url}/experiment")
+
+    def run_app():
+        app.run(port=port, debug=False, use_reloader=False)
 
     thread = threading.Thread(target=run_app)
     thread.daemon = True
@@ -90,7 +94,3 @@ def run_test_colab(app, config, order, timeout= 600 ):
     print("Structured output keys:", structured_output.keys())
     print("Structured output values:", structured_output.values())
     save_structured_output(structured_output, save_path=results_path, name="Test_data")
-
-
-
-
