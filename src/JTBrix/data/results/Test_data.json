@@ -146,5 +146,77 @@
         "popup": "Sad4"
       }
     ]
+  },
+  {
+    "participant_first_name": "Amid",
+    "age": 30,
+    "country": "Nein",
+    "experiment_start": "2025-05-08 19:55:49",
+    "experiment_duration_sec": 62,
+    "completed": true,
+    "execution_order": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "blocks": [
+      {
+        "SetCode": "1",
+        "answers": [
+          "Grun",
+          "Nein",
+          "Nein"
+        ],
+        "times": [
+          5487,
+          743,
+          1216
+        ],
+        "popup": "Ziemlich sicher"
+      },
+      {
+        "SetCode": "2",
+        "answers": [
+          "Grun",
+          " Ja ",
+          "Nein"
+        ],
+        "times": [
+          1050,
+          701,
+          1852
+        ],
+        "popup": "Ziemlich sicher"
+      },
+      {
+        "SetCode": "3",
+        "answers": [
+          "Grun",
+          "Nein",
+          "Nein"
+        ],
+        "times": [
+          1032,
+          510,
+          485
+        ],
+        "popup": "Ziemlich sicher"
+      },
+      {
+        "SetCode": "4",
+        "answers": [
+          "Grun",
+          "Nein",
+          "Nein"
+        ],
+        "times": [
+          1139,
+          650,
+          532
+        ],
+        "popup": "Ganz sicher"
+      }
+    ]
   }
 ]

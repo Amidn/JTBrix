@@ -55,42 +55,42 @@ def run_test_local(app, config, order, timeout= 600 ) :
     save_structured_output(structured_output, save_path=results_path, name="Test_data")
 
 
-def run_test_colab(app, config, order, timeout= 600 ):
-    """
-    Runs the experiment in a Google Colab environment using ngrok to expose the Flask app.
-    """
-    port = find_free_port()
-    print ("Running on Google Colab")
-    from pyngrok import ngrok
-    ngrok.set_auth_token("2wjfqkOLdNnNEdW3TogJZxdKLNA_82gyNo4zcMGMUnTrFGnQP")
-    public_url = ngrok.connect(port)
-    print(f"🌍 App is publicly available at: {public_url}/experiment")
+# def run_test_colab(app, config, order, timeout= 600 ):
+#     """
+#     Runs the experiment in a Google Colab environment using ngrok to expose the Flask app.
+#     """
+#     port = find_free_port()
+#     print ("Running on Google Colab")
+#     from pyngrok import ngrok
+#     ngrok.set_auth_token("2wjfqkOLdNnNEdW3TogJZxdKLNA_82gyNo4zcMGMUnTrFGnQP")
+#     public_url = ngrok.connect(port)
+#     print(f"🌍 App is publicly available at: {public_url}/experiment")
 
-    def run_app():
-        app.run(port=port, debug=False, use_reloader=False)
+#     def run_app():
+#         app.run(port=port, debug=False, use_reloader=False)
 
-    thread = threading.Thread(target=run_app)
-    thread.daemon = True
-    thread.start()
-    start_timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-    print("Waiting for experiment to finish...")
-    start_time = time.time()
-    while time.time() - start_time < timeout:
-        if any(entry.get("finished") for entry in submitted_results):
-            break
-        time.sleep(1)
-            # Collect and return
-    duration_seconds = int(time.time() - start_time)
-    results = get_combined_results(submitted_results)
-    results["experiment_start"] = start_timestamp
-    results["experiment_duration_sec"] = duration_seconds
+#     thread = threading.Thread(target=run_app)
+#     thread.daemon = True
+#     thread.start()
+#     start_timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+#     print("Waiting for experiment to finish...")
+#     start_time = time.time()
+#     while time.time() - start_time < timeout:
+#         if any(entry.get("finished") for entry in submitted_results):
+#             break
+#         time.sleep(1)
+#             # Collect and return
+#     duration_seconds = int(time.time() - start_time)
+#     results = get_combined_results(submitted_results)
+#     results["experiment_start"] = start_timestamp
+#     results["experiment_duration_sec"] = duration_seconds
 
     
-    print("Combined results:", results)
-    print("Execution order:", order)
+#     print("Combined results:", results)
+#     print("Execution order:", order)
 
-    structured_output = build_full_structured_result(results, config_path, execution_order=order)
-    print ("Structured output:", structured_output)
-    print("Structured output keys:", structured_output.keys())
-    print("Structured output values:", structured_output.values())
-    save_structured_output(structured_output, save_path=results_path, name="Test_data")
+#     structured_output = build_full_structured_result(results, config_path, execution_order=order)
+#     print ("Structured output:", structured_output)
+#     print("Structured output keys:", structured_output.keys())
+#     print("Structured output values:", structured_output.values())
+#     save_structured_output(structured_output, save_path=results_path, name="Test_data")

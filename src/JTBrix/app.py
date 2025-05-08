@@ -18,7 +18,7 @@ from JTBrix import  detect_environment
 from JTBrix.utils.config import read_experiment_config
 from JTBrix.utils.results import build_full_structured_result, get_combined_results
 from JTBrix.io.saving import save_structured_output
-from JTBrix.experiment.run_experiment import  run_test_local, run_test_colab
+from JTBrix.experiment.run_experiment import  run_test_local #, run_test_colab
 
 from JTBrix.utils.paths import get_project_paths
 paths = get_project_paths()
@@ -51,8 +51,8 @@ def run():
     if sys in ("macOS", "Windows"):
         run_test_local(app,config, order, timeout=600)
 
-    elif sys == "Google Colab":
-       run_test_colab(app,config, order, timeout=600)
+    # elif sys == "Google Colab":
+    #    run_test_colab(app,config, order, timeout=600)
 
 
 if __name__ == "__main__": 

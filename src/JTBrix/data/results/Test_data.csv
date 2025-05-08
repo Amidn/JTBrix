@@ -7,3 +7,7 @@ test_id,participant_first_name,participant_surename_name,age,country,native_lang
 2,Testing,Testing 1,70,Germany,Yes,2025-05-08 16:54:04,66,True,3 | 2 | 1 | 4,2,Banana2,Ford2,Paris2,1294,1129,1026,Sad2
 2,Testing,Testing 1,70,Germany,Yes,2025-05-08 16:54:04,66,True,3 | 2 | 1 | 4,3,Banana3,Ford3,London3,1620,842,1090,Sad3
 2,Testing,Testing 1,70,Germany,Yes,2025-05-08 16:54:04,66,True,3 | 2 | 1 | 4,4,Banana4,Tesla4,Berlin4,736,598,712,Sad4
+3,Amid,,30,Nein,,2025-05-08 19:55:49,62,True,1 | 2 | 3 | 4,1,Grun,Nein,Nein,5487,743,1216,Ziemlich sicher
+3,Amid,,30,Nein,,2025-05-08 19:55:49,62,True,1 | 2 | 3 | 4,2,Grun, Ja ,Nein,1050,701,1852,Ziemlich sicher
+3,Amid,,30,Nein,,2025-05-08 19:55:49,62,True,1 | 2 | 3 | 4,3,Grun,Nein,Nein,1032,510,485,Ziemlich sicher
+3,Amid,,30,Nein,,2025-05-08 19:55:49,62,True,1 | 2 | 3 | 4,4,Grun,Nein,Nein,1139,650,532,Ganz sicher
