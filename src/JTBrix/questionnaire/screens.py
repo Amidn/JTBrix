@@ -44,7 +44,6 @@ def show_video():
     return render_template("video_screen.html", filename=filename)
 
 
-
 @screens.route("/screen/dob/<int:index>")
 def screen_dob(index):
     try:

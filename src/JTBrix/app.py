@@ -1,40 +1,85 @@
 import os
-from flask import Flask, request, jsonify
+import time
+import threading
+import webbrowser
 from pathlib import Path
+from typing import Tuple
 
-from JTBrix.ui.main import ui
-from JTBrix.questionnaire.screens import screens
-from JTBrix.experiment.run_experiment import run_test
-from JTBrix.utils.results import build_full_structured_result
-from JTBrix.io.saving import save_structured_output
+from flask import Flask, request, jsonify
 
 import JTBrix
-
-# Setup paths
-jtbrix_root = Path(JTBrix.__file__).parent
-
-
-template_path = "/content/JTBrix/src/JTBrix/templates/" 
-config_path =  "/content/JTBrix/src/JTBrix/data/config.yml"
-
-
-
-static_path =  "/content/JTBrix/src/JTBrix/data/static/"
-
-results_path = "/content/JTBrix/src/JTBrix/data/results/"
+from JTBrix import screen_config
+from JTBrix.screen_config import flow_config
+from JTBrix.ui.main import ui, submitted_results
+from JTBrix.questionnaire.screens import screens
+from JTBrix.utils import find_free_port 
+from JTBrix import  detect_environment
+from JTBrix.utils.paths import get_project_paths
+from JTBrix.utils.config import read_experiment_config
+from JTBrix.utils.results import build_full_structured_result, get_combined_results
+from JTBrix.io.saving import save_structured_output
 
 
+paths = get_project_paths()
+template_path = paths["template_path"]
+config_path = paths["config_path"]
+static_path = paths["static_path"]
+results_path = paths["results_path"]
 
 
-# Create the app
-app = Flask(__name__, static_folder=static_path, template_folder=template_path)
-app.register_blueprint(ui)
-app.register_blueprint(screens)
+sys = detect_environment()
+print (f"Detected environment: {sys}")
 
-# ✅ Add /run_experiment route
-@app.route("/run_experiment")
-def run_experiment():
-    results, order = run_test(config_path, static_path , timeout=300 )
+if __name__ == "__main__":
+    timeout = 600
+        # Read config
+    config, order = read_experiment_config(config_path)
+    print("CONFIG:\n", config)
+    print("\nSELECTED ORDER:", order)
+
+    # Set up global config
+    from JTBrix import screen_config
+    screen_config.flow_config = config
+    submitted_results.clear()
+
+    port = find_free_port()
+    # Create the app
+    app = Flask(__name__, static_folder=static_path, template_folder=template_path)
+    app.register_blueprint(ui)
+    app.register_blueprint(screens)
+    def run_app():
+        app.run(port=port, debug=False, use_reloader=False)
+    
+    if sys in ("macOS", "Windows"):
+        print ("Running on local machine")
+        thread = threading.Thread(target=run_app)
+        thread.daemon = True
+        thread.start()
+        start_timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        webbrowser.open(f"http://127.0.0.1:{port}/experiment")
+        print("Waiting for experiment to finish...")
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            if any(entry.get("finished") for entry in submitted_results):
+                break
+            time.sleep(1)
+
+    # Collect and return
+    duration_seconds = int(time.time() - start_time)
+    results = get_combined_results(submitted_results)
+    results["experiment_start"] = start_timestamp
+    results["experiment_duration_sec"] = duration_seconds
+
+    
+    print("Combined results:", results)
+    print("Execution order:", order)
+
     structured_output = build_full_structured_result(results, config_path, execution_order=order)
+    print ("Structured output:", structured_output)
+    print("Structured output keys:", structured_output.keys())
+    print("Structured output values:", structured_output.values())
     save_structured_output(structured_output, save_path=results_path, name="Test_data")
-    return jsonify({"status": "success", "order": order, "summary": structured_output})
+
+
+
+

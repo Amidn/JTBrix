@@ -27,9 +27,7 @@ def run_entire_test_config(config: dict, static_folder: str, timeout: int = 600)
     screen_config.flow_config = config
     submitted_results.clear()
 
-    # app = Flask(__name__, static_folder=os.path.abspath(static_folder), template_folder=template_path)
-    # app.register_blueprint(ui)
-    # app.register_blueprint(screens)
+
 
     #port = find_free_port()
     # port = 5600
@@ -42,14 +40,14 @@ def run_entire_test_config(config: dict, static_folder: str, timeout: int = 600)
     # thread.daemon = True
     # thread.start()
     #print (f"Flask app running on port {port}")
-    time.sleep(1)
-    start_timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-    webbrowser.open(f"http://127.0.0.1:{port}/experiment")
+    # time.sleep(1)
+    # 
+    # webbrowser.open(f"http://127.0.0.1:{port}/experiment")
 
     
     # Wait until any submission is marked as finished
     print("Waiting for experiment to finish...")
-    start_time = time.time()
+    stop_time = time.time()
 
     while time.time() - start_time < timeout:
         if any(entry.get("finished") for entry in submitted_results):
@@ -57,7 +55,7 @@ def run_entire_test_config(config: dict, static_folder: str, timeout: int = 600)
         time.sleep(1)  # Check every second
     #thread.join()  # Or implement your own wait logic
 
-    duration_seconds = int(time.time() - start_time)
+    duration_seconds = int(time.time() - stop_time)
     results = get_combined_results(submitted_results)
     results["experiment_start"] = start_timestamp
     results["experiment_duration_sec"] = duration_seconds
