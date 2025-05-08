@@ -55,9 +55,9 @@ def run_test_local(app, config, order, timeout= 600 ) :
     save_structured_output(structured_output, save_path=results_path, name="Test_data")
 
 
-def run_test_colab(app, config, order, timeout= 600 ):
-    def run_app():
-        app.run(port=port, debug=False, use_reloader=False)
+def run_test_colab(app, config, order, timeout= 600 , run_app=lambda: app.run(port=port, debug=False, use_reloader=False)):
+    # def run_app():
+    #     app.run(port=port, debug=False, use_reloader=False)
 
     port = find_free_port()
     print ("Running on Google Colab")
