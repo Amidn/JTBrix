@@ -4,51 +4,60 @@
     <meta charset="UTF-8">
     <title>Video</title>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            background-color: black;
-        }
+        html, body { margin:0; padding:0; background:#000; }
         video {
-            width: 100vw;
-            height: 100vh;
+            width:100vw; height:100vh;
             object-fit: contain;
+            /* prevent context-menu seeking on some browsers */
+            -webkit-touch-callout:none; user-select:none;
         }
-        /* .debug-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            color: white;
-            background: rgba(0,0,0,0.5);
-            padding: 5px 10px;
-            font-size: 12px;
-            z-index: 9999;
-            user-select: none;
-        } */
     </style>
 </head>
 <body>
-    <!-- <div class="debug-overlay">{{ filename }}</div> -->
-    <video id="vid" controls autoplay aria-label="Video player">
-        <source src="{{ url_for('static', filename='videos/' + filename) }}" type="video/mp4">
+    <video id="vid"
+           autoplay
+           muted                <!-- plays without sound -->
+           playsinline          <!-- iOS iPad/iPhone stays in-page -->
+           disablepictureinpicture
+           controlslist="nodownload noremoteplayback nofullscreen">
+        <source src="{{ url_for('static', filename='videos/' + filename) }}"  type="video/mp4">
         <source src="{{ url_for('static', filename='videos/' + filename.rsplit('.', 1)[0] + '.webm') }}" type="video/webm">
         Your browser does not support the video tag.
     </video>
+
     <script>
         const start = Date.now();
-        const video = document.getElementById("vid");
-        let pausedBeforeEnd = false;
+        const video = document.getElementById('vid');
+        let lastSafeTime = 0;      // track legitimate playback position
 
-        video.onpause = () => {
-            if (!video.ended) {
-                pausedBeforeEnd = true;
+        /* extra safety: be sure it’s muted even if the attribute fails */
+        video.muted = true;
+
+        // Keep track of normal progress
+        video.addEventListener('timeupdate', () => { lastSafeTime = video.currentTime; });
+
+        // Block any seek attempts (keyboard drag/touch, etc.)
+        video.addEventListener('seeking', () => {
+            if (Math.abs(video.currentTime - lastSafeTime) > 0.25) {
+                video.currentTime = lastSafeTime;
             }
-        };
+        });
 
-        video.onended = () => {
+        // Auto-resume if user pauses
+        video.addEventListener('pause', () => {
+            if (!video.ended) video.play();
+        });
+
+        // When finished, hand control back to parent
+        video.addEventListener('ended', () => {
             const duration = Date.now() - start;
-            parent.nextStep(pausedBeforeEnd ? 'paused' : null, duration);
-        };
+            parent.nextStep(null, duration);
+        });
+
+        // Optional: prevent space-bar from pausing the video
+        window.addEventListener('keydown', e => {
+            if (e.code === 'Space') { e.preventDefault(); }
+        });
     </script>
 </body>
 </html>
