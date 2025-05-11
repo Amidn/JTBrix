@@ -1,5 +1,24 @@
 
 
+# This YAML file defines the structure of the experiment.
+# It contains a list of blocks under 'experiment_content':
+#
+# - Each block starts with a special type, e.g., "Begin", "end", or a SetCode.
+# - "Begin" blocks are always shown at the start and only once.
+# - "end" blocks are always shown last and only once.
+# - Blocks with "SetCode" will be randomized in order before the experiment starts.
+#
+# - Inside each block, steps are defined with specific types:
+#     - type: "video" → plays a video specified by 'video_filename'
+#     - type: "question" → displays a question with options and optional image
+#     - type: "popup" → asks for confidence or follow-up response
+#     - type: "text_input", "dob", "dropdown" → collect participant info
+#
+# ⚠️ Important: YAML spacing is strict. Make sure to use `- -` (a dash followed by a space and another dash)
+#               to define nested block items. Do NOT write `--`, which is invalid.
+#
+# Videos and images are referenced by their filenames and must exist in the static media folder.
+
 
 experiment_content:
   # This Block and its content will be at the begining of the test 

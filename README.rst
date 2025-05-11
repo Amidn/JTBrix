@@ -66,7 +66,12 @@ Basic example of how to start an experiment:
 
     typer src/JTBrix/cli.py run
     
+
 By default, JTBrix looks for a configuration file (`config.yml`) and a `static/` folder under the `Data/` directory.
+
+After running an experiment, the results are automatically saved in multiple formats—TXT, JSON, YAML, and CSV—under the `src/JTBrix/data/results/` folder.
+
+You can find and modify the configuration settings of your experiment in the `src/JTBrix/data/` directory. This includes the `config.yml` file and any associated media content needed for stimuli.
 
 The `static/` folder must include two subfolders:
 
@@ -74,6 +79,27 @@ The `static/` folder must include two subfolders:
 - `images/` – for images used in questions (e.g., `.jpeg`, `.png`)
 
 You can place these folders anywhere locally or on a server and provide the paths explicitly when calling `run_test()`.
+
+YAML Configuration Structure
+----------------------------
+
+The experiment is defined in a YAML file (`config.yml`) located in `src/JTBrix/data/`.
+
+- The configuration contains a list called `experiment_content` with multiple blocks.
+- Each block starts with a tag:
+  - `"Begin"`: always shown first, only once.
+  - `"end"`: always shown last, only once.
+  - Blocks with `"SetCode"`: randomized before the experiment starts.
+
+- Inside each block are step definitions with a `type` key:
+  - `type: "video"` → plays a video using `video_filename`
+  - `type: "question"` → presents a question with options and optional image
+  - `type: "popup"` → asks for confidence or follow-up response
+  - `type: "text_input"`, `dob`, `dropdown` → collects user info
+
+⚠️ YAML spacing is strict:
+- Use `- -` (dash + space + dash) for nested steps.
+- Avoid writing `--`, which is invalid syntax.
 
 Credits
 -------
