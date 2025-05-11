@@ -45,7 +45,9 @@ You can also run JTBrix directly via the command-line using Typer:
 
     typer src/JTBrix/cli.py run
 
-    or
+or
+
+.. code-block:: bash
 
     python src/JTBrix/cli.py
 
