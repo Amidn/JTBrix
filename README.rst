@@ -9,7 +9,8 @@ JTBrix
     :target: https://JTBrix.readthedocs.io/en/latest/?version=latest
     :alt: Documentation Status
 
-![CI](https://github.com/amidn/JTBrix/workflows/CI/badge.svg?branch=main)
+
+
 
 JTBrix is a modular Python package for running customizable video-based behavioral experiments in psychology and cognitive science.  
 It supports full-screen playback, flexible configuration via YAML, conditional logic flows, and detailed logging of user responses and timing.
