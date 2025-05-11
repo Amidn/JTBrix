@@ -4,8 +4,8 @@ JTBrix
 .. image:: https://img.shields.io/pypi/v/JTBrix.svg
     :target: https://pypi.python.org/pypi/JTBrix
 
-.. image:: https://img.shields.io/travis/amidn/JTBrix.svg
-    :target: https://travis-ci.com/amidn/JTBrix
+.. image:: https://github.com/amidn/JTBrix/workflows/CI/badge.svg?branch=main
+    :target: https://github.com/amidn/JTBrix/actions?query=workflow%3ACI
 
 .. image:: https://readthedocs.org/projects/JTBrix/badge/?version=latest
     :target: https://JTBrix.readthedocs.io/en/latest/?version=latest
