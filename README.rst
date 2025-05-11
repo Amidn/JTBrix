@@ -36,16 +36,30 @@ You can install JTBrix via pip:
 
     pip install JTBrix
 
+Command-line Usage
+------------------
+
+You can also run JTBrix directly via the command-line using Typer:
+
+.. code-block:: bash
+
+    typer src/JTBrix/cli.py main --config path/to/config.yml --static path/to/static/
+
+To enable shell autocompletion:
+
+.. code-block:: bash
+
+    typer src/JTBrix/cli.py --install-completion
+
 Usage
 -----
 
 Basic example of how to start an experiment:
 
-.. code-block:: python
+.. code-block:: bash
 
-    from JTBrix import run_test
-    result = run_test("path/to/config.yml", "path/to/static/")
-
+    typer src/JTBrix/cli.py main --config path/to/config.yml --static path/to/static/
+    
 By default, JTBrix looks for a configuration file (`config.yml`) and a `static/` folder under the `Data/` directory.
 
 The `static/` folder must include two subfolders:
