@@ -43,13 +43,17 @@ You can also run JTBrix directly via the command-line using Typer:
 
 .. code-block:: bash
 
-    typer src/JTBrix/cli.py main --config path/to/config.yml --static path/to/static/
+    typer src/JTBrix/cli.py run
+
+    or
+
+    python src/JTBrix/cli.py
 
 To enable shell autocompletion:
 
 .. code-block:: bash
 
-    typer src/JTBrix/cli.py --install-completion
+    typer --install-completion
 
 Usage
 -----
@@ -58,7 +62,7 @@ Basic example of how to start an experiment:
 
 .. code-block:: bash
 
-    typer src/JTBrix/cli.py main --config path/to/config.yml --static path/to/static/
+    typer src/JTBrix/cli.py run
     
 By default, JTBrix looks for a configuration file (`config.yml`) and a `static/` folder under the `Data/` directory.
 
