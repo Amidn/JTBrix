@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template_string
+from flask import Blueprint, render_template_string , request, render_template
 import os
-from flask import Blueprint, request, render_template
 
 
 screens = Blueprint("screens", __name__)
