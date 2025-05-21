@@ -2,7 +2,7 @@
 
 __author__ = """Amid Nayerhoda"""
 __email__ = 'Nayerhoda@infn.it'
-__version__ = '0.0.6'
+__version__ = '0.0.8'
 
 
 # Import core functionality to the top level
@@ -12,7 +12,7 @@ from JTBrix.ui import main  # Example: if you have a UI component
 from JTBrix.screen_config import flow_config  # Example: if you have a configuration module
 from JTBrix.utils.env_info import detect_environment
 from JTBrix.utils import port  # Example: utility functions
-
+from JTBrix.static_exporter import StaticExporter
 
 from JTBrix.io import saving
 
@@ -24,5 +24,5 @@ __all__ = [
     "port",
     "main",
     "flow_config",
-
+    "StaticExporter",
 ]

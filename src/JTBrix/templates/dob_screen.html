@@ -1,0 +1,25 @@
+<!-- templates/dob_screen.html -->
+<div style="padding: 40px; color: black; background: white; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <p style="font-size: 18px;">{{ prompt }}</p>
+    <input type="date" id="dobInput" style="font-size: 16px; padding: 10px; margin: 20px 0;">
+    <button id="nextBtn" disabled style="padding: 10px 20px; font-size: 16px; background: #007BFF; color: white; border: none; border-radius: 6px;">Next</button>
+</div>
+
+<script>
+    const btn = document.getElementById('nextBtn');
+    const dob = document.getElementById('dobInput');
+    const start = Date.now();
+
+    dob.addEventListener('change', function() {
+        btn.disabled = !dob.value;
+    });
+
+    btn.addEventListener('click', function() {
+        const birthDate = new Date(dob.value);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const duration = Date.now() - start;
+        console.log("DOB submitted:", dob.value, " → Age:", age);
+        window.parent.nextStep(age, duration);
+    });
+</script>
