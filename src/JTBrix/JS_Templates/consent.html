@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consent</title>
+</head>
+
+
+<!-- templates/consent_screen.html -->
+<div style="padding: 40px; color: black; background: white; height: 100%;">
+    <p style="font-size: 18px;">{{ main_text }}</p>
+    
+    {% for text in checkbox_texts %}
+        <label>
+            <input type="checkbox" class="consent-checkbox"> {{ text }}
+        </label><br>
+    {% endfor %}
+
+    <br>
+    <button id="startBtn" disabled
+            style="padding: 10px 20px; font-size: 16px; background: {{ button_color }}; color: white; border: none; border-radius: 6px;">
+        {{ button_text }}
+    </button>
+</div>
+
+<script>
+    function toggleButton() {
+        const btn = document.getElementById('startBtn');
+        const boxes = document.querySelectorAll('.consent-checkbox');
+        btn.disabled = ![...boxes].every(b => b.checked);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".consent-checkbox").forEach(cb => cb.addEventListener("change", toggleButton));
+        document.getElementById("startBtn").addEventListener("click", function () {
+             window.location.href = "page_{{ next_step }}.html";
+        });
+    });
+</script>
+
+</body>
+</html>

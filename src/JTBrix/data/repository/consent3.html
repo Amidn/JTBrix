@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consent </title>
+</head>
+
+
+<body style="margin: 0; padding: 40px; background: white;">
+    <p style="font-size: 18px;">
+         gegggg
+    </p>
+
+    <label>
+        <input type="checkbox" class="consent-checkbox">
+        den bin.
+    </label><br>
+
+    <label>
+        <input type="checkbox" class="consent-checkbox">
+         gemäß Artikel 6 DSGVO.
+    </label><br>
+
+
+    <button id="continueBtn" disabled 
+            style="padding: 10px 20px; margin-top: 20px; font-size: 16px; background: #28a745; color: white; border: none; border-radius: 6px;">
+        ok , i agree
+    </button>
+
+    <script>
+        // Enable button when both checkboxes are checked
+        function toggleButton() {
+            const btn = document.getElementById('continueBtn');
+            const checkboxes = document.querySelectorAll('.consent-checkbox');
+            btn.disabled = ![...checkboxes].every(b => b.checked);
+        }
+
+        // Setup event listeners
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".consent-checkbox").forEach(cb => {
+                cb.addEventListener("change", toggleButton);
+            });
+
+            // Navigate to second page
+            document.getElementById("continueBtn").addEventListener("click", function() {
+                window.location.href = 'consent2.html'; 
+            });
+        });
+    </script>
+</body>
+</html>
