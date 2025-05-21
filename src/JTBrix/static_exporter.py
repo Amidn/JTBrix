@@ -21,6 +21,33 @@ class StaticExporter:
         self.ordered_blocks = order
 
 
+    def get_block_type(self, block):
+        """
+        Returns the type of the given block.
+        """
+        return block.get("type", None)
+
+
+    def render_consent_block(self, block):
+        """
+        Renders the consent block using the consent_screen.html template.
+        """
+        template_path = os.path.join(self.output_path, "experiment.html")
+        if not os.path.isfile(template_path):
+            raise FileNotFoundError(f"Template not found: {template_path}")
+
+        with open(template_path, "r", encoding="utf-8") as f:
+            template = Template(f.read())
+
+        return template.render(
+            main_text=block.get("main_text", "Please read the following."),
+            checkbox_texts=block.get("checkbox_text", ["I agree to participate."]),
+            button_text=block.get("button_text", "Begin"),
+            button_color=block.get("button_color", "#007BFF")
+        )
+
+
+
 
 if __name__ == "__main__":
     exporter = StaticExporter()

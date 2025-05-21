@@ -1,18 +1,17 @@
-<!-- templates/popup_screen.html -->
 <div style="height:100%; display: flex; align-items: center; justify-content: center;">
     <div id="popup" style="width: 33vw; height: 33vh; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.3); display: flex; flex-direction: column; justify-content: space-around; align-items: center;">
-        <h2>{question}</h2>
+        <h2>{{ question }}</h2>
         <div>
-            <button style="background:{colors[0]}; padding:10px; margin:5px; color:white;" onclick="submitPopup('{options[0]}')">{options[0]}</button>
-            <button style="background:{colors[1]}; padding:10px; margin:5px; color:white;" onclick="submitPopup('{options[1]}')">{options[1]}</button>
-            <button style="background:{colors[2]}; padding:10px; margin:5px; color:white;" onclick="submitPopup('{options[2]}')">{options[2]}</button>
+            {% for option, color in options_colors %}
+                <button style="background:{{ color }}; padding:10px; margin:5px; color:white;" onclick="submitPopup('{{ option }}')">{{ option }}</button>
+            {% endfor %}
         </div>
     </div>
 </div>
 <script>
     const startTime = Date.now();
-    function submitPopup(answer) {{
+    function submitPopup(answer) {
         const time = (Date.now() - startTime) / 1000;
-        window.parent.submitPopup(answer, time);
-    }}
+        parent.postMessage({ type: "nextStep", answer: answer, time: time }, "*");
+    }
 </script>

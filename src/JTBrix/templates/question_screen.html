@@ -83,7 +83,7 @@
         const start = Date.now();
         function submit(answer) {
             const duration = Date.now() - start;
-            parent.nextStep(answer, duration);
+            parent.postMessage({ type: "nextStep", answer: answer, time: duration }, "*");
         }
     </script>
 </body>
