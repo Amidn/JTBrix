@@ -276,6 +276,45 @@ class StaticExporter:
 
 
 
+    def end(self, block, block_id, next_page):
+        """
+        Renders a text_input block using the text.html template.
+        """
+       # template_path = os.path.join(self.template_dir, "popup.html")
+        template_path = os.path.abspath(os.path.join(self.template_dir, "end.html"))
+        if not os.path.isfile(template_path):
+            raise FileNotFoundError(f"Template not found: {template_path}")
+
+        with open(template_path, "r", encoding="utf-8") as f:
+            template = Template(f.read())
+
+
+        rendered = template.render(
+            message=block["message"],
+            background=block["background"],
+            text_color=block["text_color"]
+        )
+
+        # Save to HTML file
+        output_dir = self.repository_path
+
+        
+        # Create output directory if it doesn't exist
+        os.makedirs(output_dir, exist_ok=True)
+        
+        # Create filename from block ID
+        filename = f"page_{block_id}.html"
+        file_path = os.path.join(output_dir, filename)
+        
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(rendered)
+
+        return rendered
+
+
+
+
+
 if __name__ == "__main__":
     exporter = StaticExporter( )
     exporter.load_config()
@@ -325,6 +364,15 @@ if __name__ == "__main__":
              'colors': ['gray', 'gray', 'gray']}
 
     popup = exporter.render_popup_block(block, 7, "8")
+
+
+    block = {
+    'type': 'end',
+    'message': 'Vielen Dank für Ihre Teilnahme an diesem Experiment.',
+    'background': '#eeeeee',
+    'text_color': '#333333'
+}
+    end = exporter.end(block, 8, "9")
 
     print("✔️ Config successfully loaded.")
     print("\n🔹 All blocks from config (self.blocks):")
