@@ -20,8 +20,8 @@
            playsinline
            disablepictureinpicture
            controlslist="nodownload noremoteplayback nofullscreen">
-        <source src="static/videos/FB.mp4" type="video/mp4">
-        <source src="static/videos/FB.webm" type="video/webm">
+        <source src="static/videos/TB.mp4" type="video/mp4">
+        <source src="static/videos/TB.webm" type="video/webm">
         Your browser does not support the video tag.
     </video>
 
@@ -48,8 +48,8 @@
 
         video.addEventListener('ended', () => {
             const duration = Date.now() - start;
-            localStorage.setItem("5_video_time", duration);
-            //window.location.href = "page_6.html";
+            localStorage.setItem("10_video_time", duration);
+            //window.location.href = "page_11.html";
             window.parent.postMessage({ action: "next" }, "*");
         });
 

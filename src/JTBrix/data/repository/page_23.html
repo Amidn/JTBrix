@@ -54,18 +54,18 @@
 <body>
     <div class="wrapper">
         <div class="cell">
-            <h1>In welcher Box ist ein Auto?</h1>
+            <h1>Weiß das Krokodil, dass ein Eis in der gelben Box ist?</h1>
         </div>
 
         <div class="cell options">
-            <button style="background-color: yellow;"
-                    onclick="submit('Gelb')">Gelb</button>
-            <button style="background-color: green;"
-                    onclick="submit('Grun')">Grun</button>
+            <button style="background-color: blue;"
+                    onclick="submit(' Ja ')"> Ja </button>
+            <button style="background-color: blue;"
+                    onclick="submit('Nein')">Nein</button>
         </div>
 
         <div class="cell bottom">
-            <img src="static/images/FB.png" alt="Question Image">
+            <img src="static/images/GT.png" alt="Question Image">
         </div>
     </div>
 
@@ -75,11 +75,11 @@
             const duration = Date.now() - start;
 
             // Save answer and response time
-            localStorage.setItem("6", answer);
-            localStorage.setItem("6_time", duration);
+            localStorage.setItem("23", answer);
+            localStorage.setItem("23_time", duration);
 
             // Navigate to next step
-            //window.location.href = "page_7.html";
+            //window.location.href = "page_24.html";
             window.parent.postMessage({ action: "next" }, "*");
         }
     </script>
