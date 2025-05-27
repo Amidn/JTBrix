@@ -67,8 +67,15 @@
             localStorage.setItem("19_time", duration);
 
             // Go to next step
-            window.location.href = "page_20.html";
+            //window.location.href = "page_20.html";
+            window.parent.postMessage({ action: "next" }, "*");
         }
     </script>
 </body>
+<script>
+  history.replaceState(null, "", window.location.href);
+  window.addEventListener("popstate", function () {
+    location.replace(window.location.href);
+  });
+</script>
 </html>

@@ -29,4 +29,10 @@
         {{ message }}
     </div>
 </body>
+<script>
+  history.replaceState(null, "", window.location.href);
+  window.addEventListener("popstate", function () {
+    location.replace(window.location.href);
+  });
+</script>
 </html>

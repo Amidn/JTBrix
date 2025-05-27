@@ -3,7 +3,7 @@
 <head>
     <title>Consent</title>
 </head>
-
+<body>
 
 <!-- templates/consent_screen.html -->
 <div style="padding: 40px; color: black; background: white; height: 100%;">
@@ -32,10 +32,16 @@
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".consent-checkbox").forEach(cb => cb.addEventListener("change", toggleButton));
         document.getElementById("startBtn").addEventListener("click", function () {
-             window.location.href = "page_{{ next_step }}.html";
+            // window.location.href = "page_{{ next_step }}.html";
+            window.parent.postMessage({ action: "next" }, "*");
         });
     });
 </script>
-
+<script>
+  history.replaceState(null, "", window.location.href);
+  window.addEventListener("popstate", function () {
+    location.replace(window.location.href);
+  });
+</script>
 </body>
 </html>

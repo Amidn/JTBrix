@@ -35,9 +35,16 @@
     localStorage.setItem("participant_first_name_time", duration);
 
     // Go to next page
-    window.location.href = "page_3.html";
+    //window.location.href = "page_3.html";
+    window.parent.postMessage({ action: "next" }, "*");
   });
 </script>
 
 </body>
+<script>
+  history.replaceState(null, "", window.location.href);
+  window.addEventListener("popstate", function () {
+    location.replace(window.location.href);
+  });
+</script>
 </html>

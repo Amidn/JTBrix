@@ -36,9 +36,16 @@
         localStorage.setItem("dob_response_time", duration);
 
         // Go to next screen
-        window.location.href = "page_4.html";
+       // window.location.href = "page_4.html";
+       window.parent.postMessage({ action: "next" }, "*");
     });
 </script>
 
 </body>
+<script>
+  history.replaceState(null, "", window.location.href);
+  window.addEventListener("popstate", function () {
+    location.replace(window.location.href);
+  });
+</script>
 </html>

@@ -49,7 +49,8 @@
         video.addEventListener('ended', () => {
             const duration = Date.now() - start;
             localStorage.setItem("20_video_time", duration);
-            window.location.href = "page_21.html";
+            //window.location.href = "page_21.html";
+            window.parent.postMessage({ action: "next" }, "*");
         });
 
         window.addEventListener('keydown', e => {
@@ -59,4 +60,10 @@
         });
     </script>
 </body>
+<script>
+  history.replaceState(null, "", window.location.href);
+  window.addEventListener("popstate", function () {
+    location.replace(window.location.href);
+  });
+</script>
 </html>

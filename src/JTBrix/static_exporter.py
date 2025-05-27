@@ -17,7 +17,7 @@ class StaticExporter:
         self.ordered_blocks = []
 
     def load_config(self):
-        config, order = read_experiment_config(self.config_path)
+        config, order = read_experiment_config(self.config_path, randomize=False)
         self.blocks = config
         self.ordered_blocks = order
 
@@ -165,7 +165,6 @@ class StaticExporter:
         return rendered
 
 
-
     def render_video_block(self, block, block_id, next_page):
         """
         Renders a text_input block using the text.html template.
@@ -275,7 +274,6 @@ class StaticExporter:
         return rendered
 
 
-
     def end(self, block, block_id, next_page):
         """
         Renders a text_input block using the text.html template.
@@ -311,68 +309,148 @@ class StaticExporter:
 
         return rendered
 
+    def render_all(self):
+        """
+        Renders all blocks in self.blocks sequentially by calling the appropriate render method
+        based on each block's 'type'. Each rendered block is saved as an HTML file.
+        """
+        if not self.blocks:
+            raise ValueError("No blocks loaded. Call load_config() first.")
+
+        for idx, block in enumerate(self.blocks):
+            block_type = block.get("type")
+            block_id = idx + 1
+            is_last_block = idx == len(self.blocks) - 1
+            next_page = f"{block_id + 1}" if not is_last_block else None
+
+            print(f"🔧 Rendering block {block_id}: type='{block_type}'")
+
+            if block_type == "consent":
+                self.render_consent_block(block, block_id, next_page)
+            elif block_type == "text_input":
+                self.render_text_input_block(block, block_id, next_page)
+            elif block_type == "dob":
+                self.render_dob_block(block, block_id, next_page)
+            elif block_type == "dropdown":
+                self.render_dropdown_block(block, block_id, next_page)
+            elif block_type == "video":
+                self.render_video_block(block, block_id, next_page)
+            elif block_type == "question":
+                self.render_question_block(block, block_id, next_page)
+            elif block_type == "popup":
+                self.render_popup_block(block, block_id, next_page)
+            elif block_type == "end":
+                self.end(block, block_id, next_page)
+            else:
+                raise ValueError(f"Unknown block type: {block_type}")
+
+        print("✅ All blocks rendered successfully.")
+
+    def render_index(self):
+        """
+        Generates a central index.html to manage and load all other rendered pages via iframe and JavaScript.
+        Categorizes blocks into pre_task, main_blocks, and post_task.
+        Groups main_blocks into sublists starting with a video followed by 3 questions and 1 popup.
+        Outputs these as distinct JS arrays, randomizes main_blocks order, and flattens for sequential loading.
+        """
+        # Categorize blocks by type
+        pre_task = []
+        main_blocks = []
+        post_task = []
+
+        # Collect blocks with their page filenames
+        pages = [f"page_{i + 1}.html" for i in range(len(self.blocks))]
+
+        # Build list of tuples: (block_type, page_filename)
+        block_pages = [(block.get("type"), pages[i]) for i, block in enumerate(self.blocks)]
+
+        # Separate pre_task, main_blocks, post_task based on block types
+        # Assuming pre_task types: consent, text_input, dob, dropdown (or others before video)
+        # main_blocks start from first video block to last popup before end
+        # post_task types: end or others after main blocks
+
+        # Find indices for main blocks start and end
+        first_video_idx = None
+        last_popup_idx = None
+        for i, (btype, _) in enumerate(block_pages):
+            if btype == "video" and first_video_idx is None:
+                first_video_idx = i
+            if btype == "popup":
+                last_popup_idx = i
+
+        if first_video_idx is None:
+            first_video_idx = 0
+        if last_popup_idx is None:
+            last_popup_idx = len(block_pages) - 1
+
+        # Assign blocks to pre_task, main_blocks, post_task
+        pre_task = block_pages[:first_video_idx]
+        main_blocks_raw = block_pages[first_video_idx:last_popup_idx+1]
+        post_task = block_pages[last_popup_idx+1:]
+
+        # Group main_blocks into chunks: video + 3 questions + 1 popup
+        grouped_main_blocks = []
+        i = 0
+        while i < len(main_blocks_raw):
+            group = []
+            # video
+            if i < len(main_blocks_raw) and main_blocks_raw[i][0] == "video":
+                group.append(main_blocks_raw[i][1])
+                i += 1
+            else:
+                # If no video at expected position, break to avoid infinite loop
+                break
+            # 3 questions
+            for _ in range(3):
+                if i < len(main_blocks_raw) and main_blocks_raw[i][0] == "question":
+                    group.append(main_blocks_raw[i][1])
+                    i += 1
+                else:
+                    break
+            # 1 popup
+            if i < len(main_blocks_raw) and main_blocks_raw[i][0] == "popup":
+                group.append(main_blocks_raw[i][1])
+                i += 1
+            grouped_main_blocks.append(group)
+
+        # JavaScript arrays for pages
+        template_path = os.path.join(self.template_dir, "index_template.html")
+        if not os.path.isfile(template_path):
+            raise FileNotFoundError(f"Missing template: {template_path}")
+
+        with open(template_path, "r", encoding="utf-8") as f:
+            template = Template(f.read())
+        
+
+        rendered = template.render(
+            pre_task=[page for _, page in pre_task],
+            main_blocks=grouped_main_blocks,
+            post_task=[page for _, page in post_task]
+        )
+
+        file_path = os.path.join(self.repository_path, "index.html")
+        os.makedirs(self.repository_path, exist_ok=True)
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(rendered)
+
+        print("✅ index.html generated successfully.")
+
+
+
+
+
+
 
 
 
 
 if __name__ == "__main__":
-    exporter = StaticExporter( )
+    exporter = StaticExporter()
     exporter.load_config()
-    
+    print("✔️ Config successfully loaded.")
+    exporter.render_all()
+    exporter.render_index()
 
-
-    block = {'type': 'consent', 
-             'main_text': ' Liebe Teilnehmenden, Vielen Dank für dein Interesse! In dieser Studie geht es um die Beurteilungen von wahren und falschen Aussagen. Die Studie dauert ungefähr 5 Minuten. Mit Ihrer Teilnahme erklären Sie sich einverstanden, dass Ihre Daten pseudonymisiert und anonym verarbeitet werden. Ihre Daten werden gemäß DSGVO vertraulich behandelt und geschützt. Sie können Ihre Zustimmung jederzeit ohne Angabe von Gründen widerrufen. Verantwortlich für diese Studie sind Prof. Dr. Hannes Rakoczy, Dr. Marina Proft und Saba Amirhaftehran (Universität Göttingen)..',
-             'checkbox_text': ['Hiermit bestätige ich, dass ich mindestens 18 Jahre alt bin und mit der Teilnahme an dieser Studie einverstanden bin.', 'Hiermit stimme ich der Datenerhebung und -verarbeitung zu gemäß Artikel 6 DSGVO.'], 
-             'button_text': 'Start', 'button_color': '#28a745'}
-
-    consent = exporter.render_consent_block(block, 1, "2")
-    print(consent)
-  
-  
-    block =    {'type': 'text_input', 
-                'id': 'participant_first_name', 
-                'prompt': 'Geben Sie bitte einen Codenamen für sich ein:', 
-                'placeholder': 'Your full name', 
-                'button_text': 'Weiter'}
-    text_input = exporter.render_text_input_block(block, 2, "3")
-
-
-    block =  {'type': 'dob', 'prompt': 'Geburtsdatum'}
-    dob = exporter.render_dob_block(block, 3, "4")
-
-    block = {'type': 'dropdown', 
-            'prompt': 'Ist Deutsch deine Muttersprache??', 
-            'options': ['Ja', 'Nein']}
-    dropdown = exporter.render_dropdown_block(block, 4, "5")
-
-    block = {'type': 'video', 'video_filename': 'GI.mp4'}
-    video = exporter.render_video_block(block, 5, "6")
-
-    block = {'type': 'question', 
-             'prompt': 'In welcher Box ist ein Würfel?', 
-             'options': ['Gelb', 'Grun'], 
-             'colors': ['yellow', 'green'], 
-             'image': 'GI.png'}
-
-    question = exporter.render_question_block(block, 6, "7")
-
-
-    block = {'type': 'popup', 
-             'question': 'Wie sicher bist du dir?', 
-             'options': ['Nicht so sicher', 'Ziemlich sicher', 'Ganz sicher'], 
-             'colors': ['gray', 'gray', 'gray']}
-
-    popup = exporter.render_popup_block(block, 7, "8")
-
-
-    block = {
-    'type': 'end',
-    'message': 'Vielen Dank für Ihre Teilnahme an diesem Experiment.',
-    'background': '#eeeeee',
-    'text_color': '#333333'
-}
-    end = exporter.end(block, 8, "9")
 
     print("✔️ Config successfully loaded.")
     print("\n🔹 All blocks from config (self.blocks):")

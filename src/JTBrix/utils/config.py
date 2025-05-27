@@ -6,7 +6,7 @@ import yaml
 import random
 from typing import Tuple, List, Dict
 
-def read_experiment_config(yaml_path: str) -> Tuple[List[Dict], List[str]]:
+def read_experiment_config(yaml_path: str, randomize: bool = True) -> Tuple[List[Dict], List[str]]:
     """
     Loads an experiment configuration from a YAML file and processes it according to specified rules.
     
@@ -49,9 +49,11 @@ def read_experiment_config(yaml_path: str) -> Tuple[List[Dict], List[str]]:
         steps = block[1:]
         processed_middles.append((setcode, steps))
         setcodes.append(setcode)
-    
-    # Shuffle middle blocks but preserve internal order
-    random.shuffle(processed_middles)
+
+    # Randomize the order of middle blocks if requested
+    if randomize:
+        random.shuffle(processed_middles)
+
     selected_order = [sc for sc, _ in processed_middles]
     config_middle = [step for _, steps in processed_middles for step in steps]
     
