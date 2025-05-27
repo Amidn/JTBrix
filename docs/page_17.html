@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Questions</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .wrapper {
+            height: 100%;
+            display: grid;
+            grid-template-rows: 1fr 1fr 1fr;
+            padding: 2em;
+            box-sizing: border-box;
+        }
+
+        .cell {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        h1 { margin: 0; }
+
+        .options {
+            flex-direction: row;
+            gap: 1.2em;
+            transform: translateY(-2.5cm);
+        }
+        .options button {
+            font-size: 1.2em;
+            padding: 1em 2em;
+            border: none;
+            cursor: pointer;
+        }
+
+        .bottom {
+            transform: translateY(-2.5cm);
+        }
+        img {
+            max-width: 80vw;
+            max-height: 28vh;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="cell">
+            <h1>Glaubt der Vogel, dass ein Würfel in der grünen Box ist?</h1>
+        </div>
+
+        <div class="cell options">
+            <button style="background-color: blue;"
+                    onclick="submit(' Ja ')"> Ja </button>
+            <button style="background-color: blue;"
+                    onclick="submit('Nein')">Nein</button>
+        </div>
+
+        <div class="cell bottom">
+            <img src="static/images/GI.png" alt="Question Image">
+        </div>
+    </div>
+
+    <script>
+        const start = Date.now();
+        function submit(answer) {
+            const duration = Date.now() - start;
+
+            // Save answer and response time
+            localStorage.setItem("17", answer);
+            localStorage.setItem("17_time", duration);
+
+            // Navigate to next step
+            //window.location.href = "page_18.html";
+            window.parent.postMessage({ action: "next" }, "*");
+        }
+    </script>
+</body>
+<script>
+  history.replaceState(null, "", window.location.href);
+  window.addEventListener("popstate", function () {
+    location.replace(window.location.href);
+  });
+</script>
+</html>

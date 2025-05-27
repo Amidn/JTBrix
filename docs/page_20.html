@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Video</title>
+    <style>
+        html, body { margin:0; padding:0; background:#000; }
+        video {
+            width:100vw; height:100vh;
+            object-fit: contain;
+            -webkit-touch-callout:none;
+            user-select:none;
+        }
+    </style>
+</head>
+<body>
+    <video id="vid"
+           autoplay
+           muted
+           playsinline
+           disablepictureinpicture
+           controlslist="nodownload noremoteplayback nofullscreen">
+        <source src="static/videos/GT.mp4" type="video/mp4">
+        <source src="static/videos/GT.webm" type="video/webm">
+        Your browser does not support the video tag.
+    </video>
+
+    <script>
+        const start = Date.now();
+        const video = document.getElementById('vid');
+        let lastSafeTime = 0;
+
+        video.muted = true;
+
+        video.addEventListener('timeupdate', () => {
+            lastSafeTime = video.currentTime;
+        });
+
+        video.addEventListener('seeking', () => {
+            if (Math.abs(video.currentTime - lastSafeTime) > 0.25) {
+                video.currentTime = lastSafeTime;
+            }
+        });
+
+        video.addEventListener('pause', () => {
+            if (!video.ended) video.play();
+        });
+
+        video.addEventListener('ended', () => {
+            const duration = Date.now() - start;
+            localStorage.setItem("20_video_time", duration);
+            //window.location.href = "page_21.html";
+            window.parent.postMessage({ action: "next" }, "*");
+        });
+
+        window.addEventListener('keydown', e => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+<script>
+  history.replaceState(null, "", window.location.href);
+  window.addEventListener("popstate", function () {
+    location.replace(window.location.href);
+  });
+</script>
+</html>
