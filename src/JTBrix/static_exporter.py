@@ -440,10 +440,6 @@ class StaticExporter:
 
 
 
-
-
-
-
 if __name__ == "__main__":
     exporter = StaticExporter()
     exporter.load_config()
