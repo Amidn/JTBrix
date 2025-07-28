@@ -1,21 +1,15 @@
+
 import os
 import random
 import shutil
 import yaml
 from jinja2 import Template
-
 from JTBrix.utils.config import read_experiment_config
-
-# StaticExporter class for generating static HTML pages from JTBrix experiment configurations
-# It supports rendering various block types like consent, text input, video, questions, and popups.
-# The rendered pages are saved in a specified repository path, and an index.html is generated
-# to manage and load these pages via JavaScript arrays.
-# The HTML files are github pages compatible, allowing for easy hosting and sharing of experiments.
 
 
 
 class StaticExporter:
-    def __init__(self, static_folder="static", config_path="data/config.yml", template_dir="JS_Templates", output_path="data/results", repository_path="data/repository"):
+    def __init__(self, static_folder="static", config_path="data/config.yml", template_dir="JATOS_Templates", output_path="data/jatos", repository_path="data/jatos"):
         self.config_path = config_path
         self.template_dir = template_dir
         self.output_path = output_path
@@ -37,11 +31,11 @@ class StaticExporter:
         return block.get("type", None)
 
 
-    def render_consent_block(self, block, block_id,next_page): 
+    def render_consent_block(self, block, block_id, next_page): 
         """
-        Renders the consent block using the consent_screen.html template.
+        Renders the consent block using the consent.js.j2 template.
         """
-        consent_template = os.path.join(self.template_dir, "consent.html")
+        consent_template = os.path.join(self.template_dir, "consent.js.j2")
         if not os.path.isfile(consent_template):
             raise FileNotFoundError(f"Template not found: {consent_template}")
 
@@ -53,31 +47,26 @@ class StaticExporter:
             main_text=block["main_text"],
             checkbox_texts=block["checkbox_text"],
             button_text=block["button_text"],
-            button_color=block.get("button_color", "#007bff")  # default if missing
+            button_color=block.get("button_color", "#007bff")
         )
 
-        # Save to HTML file
         output_dir = self.repository_path
-
-        
-        # Create output directory if it doesn't exist
         os.makedirs(output_dir, exist_ok=True)
-        
-        # Create filename from block ID
-        filename = f"page_{block_id}.html"
-        file_path = os.path.join(output_dir, filename)
-        
+
+        filename = f"page_{block_id}.js"
+        file_path = os.path.join(output_dir, "pages", filename)
+
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(rendered)
 
         return rendered
 
 
-    def render_text_input_block(self, block, block_id, next_page):
+    def render_text_input_block(self, block, block_id, next_page): 
         """
-        Renders a text_input block using the text.html template.
+        Renders a text_input block using the text.js.j2 template.
         """
-        template_path = os.path.join(self.template_dir, "text.html")
+        template_path = os.path.join(self.template_dir, "text.js.j2")
         if not os.path.isfile(template_path):
             raise FileNotFoundError(f"Template not found: {template_path}")
 
@@ -85,34 +74,30 @@ class StaticExporter:
             template = Template(f.read())
 
         rendered = template.render(
-            id= block["id"],
-            prompt= block["prompt"],
-            placeholder= block["placeholder"],
-            button_text= block["button_text"],
-            next_step= next_page
-            )
-        # Save to HTML file
-        output_dir = self.repository_path
+            id=block["id"],
+            prompt=block["prompt"],
+            placeholder=block["placeholder"],
+            button_text=block["button_text"],
+            next_step=next_page
+        )
 
-        
-        # Create output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
-        
-        # Create filename from block ID
-        filename = f"page_{block_id}.html"
-        file_path = os.path.join(output_dir, filename)
-        
+        # Save as JS file inside /pages
+        pages_dir = os.path.join(self.repository_path, "pages")
+        os.makedirs(pages_dir, exist_ok=True)
+
+        filename = f"page_{block_id}.js"
+        file_path = os.path.join(pages_dir, filename)
+
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(rendered)
 
         return rendered
-
 
     def render_dob_block(self, block, block_id, next_page):
         """
-        Renders a text_input block using the text.html template.
+        Renders a date-of-birth block using the dob.js.j2 template.
         """
-        template_path = os.path.join(self.template_dir, "dob.html")
+        template_path = os.path.join(self.template_dir, "dob.js.j2")
         if not os.path.isfile(template_path):
             raise FileNotFoundError(f"Template not found: {template_path}")
 
@@ -120,31 +105,27 @@ class StaticExporter:
             template = Template(f.read())
 
         rendered = template.render(
-            prompt= block["prompt"],
-            next_step= next_page
-            )
-        # Save to HTML file
-        output_dir = self.repository_path
+            prompt=block["prompt"],
+            next_step=next_page
+        )
 
-        
-        # Create output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
-        
-        # Create filename from block ID
-        filename = f"page_{block_id}.html"
-        file_path = os.path.join(output_dir, filename)
-        
+        # Save as JS file inside /pages
+        pages_dir = os.path.join(self.repository_path, "pages")
+        os.makedirs(pages_dir, exist_ok=True)
+
+        filename = f"page_{block_id}.js"
+        file_path = os.path.join(pages_dir, filename)
+
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(rendered)
 
         return rendered
-
 
     def render_dropdown_block(self, block, block_id, next_page):
         """
-        Renders a text_input block using the text.html template.
+        Renders a dropdown block using the dropdown.js.j2 template.
         """
-        template_path = os.path.join(self.template_dir, "dropdown.html")
+        template_path = os.path.join(self.template_dir, "dropdown.js.j2")
         if not os.path.isfile(template_path):
             raise FileNotFoundError(f"Template not found: {template_path}")
 
@@ -152,32 +133,28 @@ class StaticExporter:
             template = Template(f.read())
 
         rendered = template.render(
-            prompt= block["prompt"],
-            options= block["options"],
-            next_step= next_page
-            )
-        # Save to HTML file
-        output_dir = self.repository_path
+            prompt=block["prompt"],
+            options=block["options"],
+            next_step=next_page
+        )
 
-        
-        # Create output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
-        
-        # Create filename from block ID
-        filename = f"page_{block_id}.html"
-        file_path = os.path.join(output_dir, filename)
-        
+        # Save as JS file inside /pages
+        pages_dir = os.path.join(self.repository_path, "pages")
+        os.makedirs(pages_dir, exist_ok=True)
+
+        filename = f"page_{block_id}.js"
+        file_path = os.path.join(pages_dir, filename)
+
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(rendered)
 
         return rendered
-
 
     def render_video_block(self, block, block_id, next_page):
         """
-        Renders a text_input block using the text.html template.
+        Renders a video block using the video.js.j2 template.
         """
-        template_path = os.path.join(self.template_dir, "video.html")
+        template_path = os.path.join(self.template_dir, "video.js.j2")
         if not os.path.isfile(template_path):
             raise FileNotFoundError(f"Template not found: {template_path}")
 
@@ -185,32 +162,27 @@ class StaticExporter:
             template = Template(f.read())
 
         rendered = template.render(
-            filename = block["video_filename"],
-            id = block_id,
-            next_step= next_page
-            )
-        # Save to HTML file
-        output_dir = self.repository_path
+            filename=block["video_filename"],
+            id=f"video_{block_id}",  # ensure unique identifier
+            next_step=next_page
+        )
 
-        
-        # Create output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
-        
-        # Create filename from block ID
-        filename = f"page_{block_id}.html"
-        file_path = os.path.join(output_dir, filename)
-        
+        pages_dir = os.path.join(self.repository_path, "pages")
+        os.makedirs(pages_dir, exist_ok=True)
+
+        filename = f"page_{block_id}.js"
+        file_path = os.path.join(pages_dir, filename)
+
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(rendered)
 
         return rendered
 
-
     def render_question_block(self, block, block_id, next_page):
         """
-        Renders a text_input block using the text.html template.
+        Renders a question block using the question.js.j2 template.
         """
-        template_path = os.path.join(self.template_dir, "question.html")
+        template_path = os.path.join(self.template_dir, "question.js.j2")
         if not os.path.isfile(template_path):
             raise FileNotFoundError(f"Template not found: {template_path}")
 
@@ -218,8 +190,7 @@ class StaticExporter:
             template = Template(f.read())
 
         rendered = template.render(
-            id=block_id,
-            index=block_id,  # optional, used in <title>
+            id=f"question_{block_id}",
             question=block["prompt"],
             option1=block["options"][0],
             option2=block["options"][1],
@@ -228,17 +199,13 @@ class StaticExporter:
             image=block["image"],
             next_step=next_page
         )
-        # Save to HTML file
-        output_dir = self.repository_path
 
-        
-        # Create output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
-        
-        # Create filename from block ID
-        filename = f"page_{block_id}.html"
-        file_path = os.path.join(output_dir, filename)
-        
+        pages_dir = os.path.join(self.repository_path, "pages")
+        os.makedirs(pages_dir, exist_ok=True)
+
+        filename = f"page_{block_id}.js"
+        file_path = os.path.join(pages_dir, filename)
+
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(rendered)
 
@@ -247,10 +214,9 @@ class StaticExporter:
 
     def render_popup_block(self, block, block_id, next_page):
         """
-        Renders a text_input block using the text.html template.
+        Renders a popup block using the popup.js.j2 template.
         """
-       # template_path = os.path.join(self.template_dir, "popup.html")
-        template_path = os.path.abspath(os.path.join(self.template_dir, "popup.html"))
+        template_path = os.path.join(self.template_dir, "popup.js.j2")
         if not os.path.isfile(template_path):
             raise FileNotFoundError(f"Template not found: {template_path}")
 
@@ -258,42 +224,32 @@ class StaticExporter:
             template = Template(f.read())
 
         rendered = template.render(
-            id=block_id,
-           # index=block_id,  # optional
+            id=f"popup_{block_id}",
             question=block["question"],
             options_colors=zip(block["options"], block["colors"]),
             next_step=next_page
         )
 
-        # Save to HTML file
-        output_dir = self.repository_path
+        pages_dir = os.path.join(self.repository_path, "pages")
+        os.makedirs(pages_dir, exist_ok=True)
 
-        
-        # Create output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
-        
-        # Create filename from block ID
-        filename = f"page_{block_id}.html"
-        file_path = os.path.join(output_dir, filename)
-        
+        filename = f"page_{block_id}.js"
+        file_path = os.path.join(pages_dir, filename)
+
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(rendered)
 
         return rendered
-
-
     def end(self, block, block_id, next_page):
         """
-        Renders a text_input block using the text.html template.
+        Renders the end screen using the end.js.j2 template.
         """
-       # template_path = os.path.join(self.template_dir, "popup.html")
-        template_path = os.path.abspath(os.path.join(self.template_dir, "end.html"))
+        template_path = os.path.join(self.template_dir, "end.js.j2")
         if not os.path.isfile(template_path):
             raise FileNotFoundError(f"Template not found: {template_path}")
 
         with open(template_path, "r", encoding="utf-8") as f:
             template = Template(f.read())
-
 
         rendered = template.render(
             message=block["message"],
@@ -301,17 +257,12 @@ class StaticExporter:
             text_color=block["text_color"]
         )
 
-        # Save to HTML file
-        output_dir = self.repository_path
+        pages_dir = os.path.join(self.repository_path, "pages")
+        os.makedirs(pages_dir, exist_ok=True)
 
-        
-        # Create output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
-        
-        # Create filename from block ID
-        filename = f"page_{block_id}.html"
-        file_path = os.path.join(output_dir, filename)
-        
+        filename = f"page_{block_id}.js"
+        file_path = os.path.join(pages_dir, filename)
+
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(rendered)
 
@@ -352,11 +303,11 @@ class StaticExporter:
             else:
                 raise ValueError(f"Unknown block type: {block_type}")
 
-        print("✅ All blocks rendered successfully.")
+        print("All blocks rendered successfully.")
 
-    def render_index(self):
+    def render_main(self):
         """
-        Generates a central index.html to manage and load all other rendered pages via iframe and JavaScript.
+        Generates a central main.html to manage and load all other rendered pages via iframe and JavaScript.
         Categorizes blocks into pre_task, main_blocks, and post_task.
         Groups main_blocks into sublists starting with a video followed by 3 questions and 1 popup.
         Outputs these as distinct JS arrays, randomizes main_blocks order, and flattens for sequential loading.
@@ -367,7 +318,7 @@ class StaticExporter:
         post_task = []
 
         # Collect blocks with their page filenames
-        pages = [f"page_{i + 1}.html" for i in range(len(self.blocks))]
+        pages = [f"page_{i + 1}.js" for i in range(len(self.blocks))]
 
         # Build list of tuples: (block_type, page_filename)
         block_pages = [(block.get("type"), pages[i]) for i, block in enumerate(self.blocks)]
@@ -436,12 +387,12 @@ class StaticExporter:
             post_task=[page for _, page in post_task]
         )
 
-        file_path = os.path.join(self.repository_path, "index.html")
+        file_path = os.path.join(self.repository_path, "main.html")
         os.makedirs(self.repository_path, exist_ok=True)
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(rendered)
 
-        print("✅ index.html generated successfully.")
+        print(" main.html generated successfully.")
 
 
 
@@ -450,18 +401,18 @@ class StaticExporter:
 if __name__ == "__main__":
     exporter = StaticExporter()
     exporter.load_config()
-    print("✔️ Config successfully loaded.")
+    print(" Config successfully loaded.")
     exporter.render_all()
-    exporter.render_index()
+    exporter.render_main()
 
 
-    print("✔️ Config successfully loaded.")
-    print("\n🔹 All blocks from config (self.blocks):")
+    print(" Config successfully loaded.")
+    print("\n All blocks from config (self.blocks):")
     for i, block in enumerate(exporter.blocks):
         print(f"  {i+1}. {block}")
 
-    print("\n🔹 Ordered block references (self.ordered_blocks):")
+    print("\n Ordered block references (self.ordered_blocks):")
     for i, block in enumerate(exporter.ordered_blocks):
         print(f"  {i+1}. {block}")
 
-    print("\n🔹 Type of first item in ordered_blocks:", type(exporter.ordered_blocks[0]))
+    print("\n Type of first item in ordered_blocks:", type(exporter.ordered_blocks[0]))

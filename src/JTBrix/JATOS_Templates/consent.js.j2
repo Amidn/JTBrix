@@ -1,0 +1,38 @@
+export function loadPage(container, next) {
+  container.innerHTML = `
+    <div style="padding: 40px; color: black; background: white; height: 100%;">
+      <p style="font-size: 18px;">{{ main_text }}</p>
+
+      {% for text in checkbox_texts %}
+        <label>
+          <input type="checkbox" class="consent-checkbox"> {{ text }}
+        </label><br>
+      {% endfor %}
+
+      <br>
+      <button id="startBtn" disabled
+              style="padding: 10px 20px; font-size: 16px; background: {{ button_color }}; color: white; border: none; border-radius: 6px;">
+        {{ button_text }}
+      </button>
+    </div>
+  `;
+
+  const btn = document.getElementById("startBtn");
+  const boxes = document.querySelectorAll(".consent-checkbox");
+
+  function toggleButton() {
+    btn.disabled = ![...boxes].every(b => b.checked);
+  }
+
+  boxes.forEach(cb => cb.addEventListener("change", toggleButton));
+  toggleButton();
+
+  btn.addEventListener("click", () => {
+    next(); // Load next page
+  });
+
+  history.replaceState(null, "", window.location.href);
+  window.addEventListener("popstate", () => {
+    location.replace(window.location.href);
+  });
+}

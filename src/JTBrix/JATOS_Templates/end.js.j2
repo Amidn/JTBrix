@@ -1,0 +1,33 @@
+export function loadPage(container, next) {
+  container.innerHTML = `
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: {{ background }};
+            color: {{ text_color }};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .message-box {
+            max-width: 70vw;
+            padding: 40px;
+            font-size: 2em;
+            line-height: 1.6em;
+        }
+    </style>
+
+    <div class="message-box">
+        {{ message }}
+    </div>
+  `;
+
+  history.replaceState(null, "", window.location.href);
+  window.addEventListener("popstate", function () {
+    location.replace(window.location.href);
+  });
+}
