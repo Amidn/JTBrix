@@ -1,0 +1,104 @@
+export function loadPage(container, next) {
+  container.innerHTML = `
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            background: #fff;
+            color: #000;
+            font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+        }
+
+        .wrapper {
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2em 5cm;
+            box-sizing: border-box;
+            margin-top: 151px;
+        }
+
+        .frame {
+            background: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            padding: 2em;
+            width: calc(100vw - 10cm); /* ~5 cm margins per side */
+            max-width: 960px; /* wider to keep buttons side-by-side */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2em;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.6em;
+            font-family: inherit;
+            text-align: center;
+        }
+
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 113px; /* ~3 cm spacing */
+            flex-wrap: nowrap; /* force side-by-side */
+            width: 100%;
+        }
+
+        .options button {
+            font-size: 1.2em;
+            padding: 1em 2em;
+            border: none;
+            cursor: pointer;
+            width: 220px;
+            height: 100px;
+            white-space: normal;
+        }
+
+        img {
+            max-width: 80vw;
+            max-height: 28vh;
+            margin-top: 2em;
+        }
+    </style>
+
+    <div class="wrapper">
+        <div class="frame">
+            <h1>{{ question }}</h1>
+
+            <div class="options">
+                <button style="background-color: {{ color1 }};" id="btn1">{{ option1 }}</button>
+                <button style="background-color: {{ color2 }};" id="btn2">{{ option2 }}</button>
+            </div>
+        </div>
+
+        <img src="static/images/{{ image }}" alt="Question Image">
+    </div>
+  `;
+
+  const start = Date.now();
+
+  const handleClick = (answer) => {
+    const duration = Date.now() - start;
+
+    console.log("{{ id }} setcode:", {{ setcode | tojson }});
+    // include setcode too (injected by the generator)
+    const data = {
+      {{ id }}: answer,
+      {{ id }}_time: duration,
+      {{ id }}_setcode: {{ setcode | tojson }}
+    };
+
+    jatos.appendResultData(data);
+    window.jatosData = { ...(window.jatosData || {}), ...data };
+
+    next();
+  };
+
+  document.getElementById("btn1").addEventListener("click", () => handleClick("{{ option1 }}"));
+  document.getElementById("btn2").addEventListener("click", () => handleClick("{{ option2 }}"));
+}

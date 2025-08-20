@@ -1,0 +1,115 @@
+export function loadPage(container, next) {
+  container.innerHTML = `
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            background: #fff; /* match other pages */
+            color: #000;
+            font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+        .wrapper {
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            padding: 2em 5cm; /* ~5cm margins left/right */
+        }
+        .frame {
+            background: #f5f5f5; /* light gray card */
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            padding: 32px;
+            width: 100%;
+            max-width: 800px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 16px;
+        }
+        .message-box {
+            font-size: 1.2em; /* match info page body size */
+            line-height: 1.6;
+        }
+        .sub { font-size: 0.9em; opacity: 0.8; margin-top: 4px; }
+        .actions { margin-top: 8px; }
+        button { font-size: 1rem; padding: 10px 18px; cursor: pointer; border: none; border-radius: 6px; background: #007BFF; color: #fff; }
+    </style>
+
+    <div class="wrapper">
+      <div class="frame">
+        <div class="message-box">{{ message }}</div>
+        <div class="sub" id="status">Speichere Ergebnisse …</div>
+        <div class="actions">
+          <button id="finishBtn">Finish</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Prevent back navigation
+  history.replaceState(null, "", window.location.href);
+  window.addEventListener("popstate", function () {
+    location.replace(window.location.href);
+  });
+
+  // Submission and countdown logic
+  let submitted = false;
+  let seconds = 10;
+  const status = container.querySelector("#status");
+  const btn = container.querySelector("#finishBtn");
+  function endNow() {
+    if (!submitted) {
+      submitted = true;
+      if (window.jatos && typeof window.jatos.submitResultData === "function") {
+        window.jatos.submitResultData(window.jatosData || {}, function () {
+          window.jatos.endStudy();
+        });
+      } else if (window.jatos && typeof window.jatos.endStudy === "function") {
+        window.jatos.endStudy();
+      }
+    }
+  }
+  // Submit results immediately if not already done, then start countdown
+  if (window.jatos && typeof window.jatos.submitResultData === "function" && !submitted) {
+    submitted = true;
+    window.jatos.submitResultData(window.jatosData || {}, function () {
+      // After submission, start countdown
+      let interval = setInterval(function () {
+        seconds--;
+        if (status) status.textContent = "Ergebnisse gespeichert. Die Seite schließt in " + seconds + " Sekunden …";
+        if (seconds <= 0) {
+          clearInterval(interval);
+          if (window.jatos && typeof window.jatos.endStudy === "function") {
+            window.jatos.endStudy();
+          }
+        }
+      }, 1000);
+      if (status) status.textContent = "Ergebnisse gespeichert. Die Seite schließt in " + seconds + " Sekunden …";
+    });
+  } else {
+    // If already submitted or no jatos, just start countdown to endStudy
+    let interval = setInterval(function () {
+      seconds--;
+      if (status) status.textContent = "Ergebnisse gespeichert. Die Seite schließt in " + seconds + " Sekunden …";
+      if (seconds <= 0) {
+        clearInterval(interval);
+        if (window.jatos && typeof window.jatos.endStudy === "function") {
+          window.jatos.endStudy();
+        }
+      }
+    }, 1000);
+    if (status) status.textContent = "Ergebnisse gespeichert. Die Seite schließt in " + seconds + " Sekunden …";
+  }
+  if (btn) {
+    btn.addEventListener("click", function () {
+      if (window.jatos && typeof window.jatos.endStudy === "function") {
+        window.jatos.endStudy();
+      }
+    });
+  }
+}

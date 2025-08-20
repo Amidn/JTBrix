@@ -1,0 +1,185 @@
+# This YAML file defines the structure of the experiment.
+# It contains a list of blocks under 'experiment_content':
+#
+# - Each block starts with a special type, e.g., "Begin", "end", or a SetCode.
+# - "Begin" blocks are always shown at the start and only once.
+# - "end" blocks are always shown last and only once.
+# - Blocks with "SetCode" will be randomized in order before the experiment starts.
+#
+# - Inside each block, steps are defined with specific types:
+#     - type: "video" → plays a video specified by 'video_filename'
+#     - type: "question" → displays a question with options and optional image
+#     - type: "popup" → asks for confidence or follow-up response
+#     - type: "text_input", "dob", "dropdown" → collect participant info
+#
+#  Important: YAML spacing is strict. Make sure to use `- -` (a dash followed by a space and another dash)
+#               to define nested block items. Do NOT write `--`, which is invalid.
+#
+# Videos and images are referenced by their filenames and must exist in the static media folder.
+#    - type: "welcome"
+#      main_text: "Welcome to the Experiment!"
+#      subtext: "This study will switch to fullscreen mode when you click the button below."
+#      button_text: "Start in Fullscreen"
+
+
+experiment_content:
+  # This Block and its content will be at the begining of the test 
+  - - type: "Begin"
+    - type: "info"
+      text : "Liebe Teilnehmende, vielen Dank für Ihr Interesse! Die Studie dauert ungefähr fünf Minuten. In dieser Studie werden vier kurze Videos mit Puppen, Tieren und verschiedenen Objekten gezeigt. Nach jedem Video werden Ihnen einige Fragen zum Gesehenen gestellt. Wichtig zu wissen ist, dass diese Videos für Kinder konzipiert wurden. Daher wundern Sie sich bitte nicht, wenn manche Fragen sehr einfach und andere vielleicht etwas schwieriger erscheinen. Viel Spaß beim Mitmachen."
+      button_text : "Weiter"
+      button_color : "#4CAF50"
+    - type: "consent"
+      main_text: " Mit Ihrer Teilnahme erklären Sie sich einverstanden, dass Ihre Daten pseudonymisiert und anonym verarbeitet werden. Ihre Daten werden gemäß DSGVO vertraulich behandelt und geschützt. Sie können Ihre Zustimmung jederzeit ohne Angabe von Gründen widerrufen. Verantwortlich für diese Studie sind Prof. Dr. Hannes Rakoczy, Dr. Marina Proft und Saba Amirhaftehran (Universität Göttingen)."
+      checkbox_text: ["Hiermit bestätige ich, dass ich mindestens 18 Jahre alt bin und mit der Teilnahme an dieser Studie einverstanden bin.", "Hiermit stimme ich der Datenerhebung und -verarbeitung zu gemäß Artikel 6 DSGVO."]
+      button_text: "Start"
+      button_color: "#28a745"
+    - type: "text_input"
+      id: "participant_first_name"
+      prompt: "Geben Sie bitte einen Codenamen für sich ein:"
+      placeholder: "Your full name"
+      button_text: "Weiter"
+    - type: "dob"                           # only for specifying the age
+      prompt: "Geburtsdatum"
+      min_age : 18
+    - type : "dropdown"
+      id : "mother_tongue"                # this is the id of the dropdown
+      prompt : "Ist Deutsch deine Muttersprache?"
+      options : ["Ja", "Nein"]
+    - type : "dropdown"
+      id : "sex"                # this is the id of the dropdown
+      prompt : "Geschlecht?"
+      options : ["männlich ", "weiblich", "nicht-binär"]  # options for the
+    - type : "dropdown"
+      id : "Education"                # this is the id of the dropdown  
+      prompt : "Allgemeine?"
+      options: [" Hochschulreife", "Bachelorabschluss", "Masterabschluss", "PhD oder höher"]
+
+
+  # This Block and its content will be at the end of the test
+  - - type: "end"
+    - message: "Vielen Dank für Ihre Teilnahme an diesem Experiment."
+    - background : "#eeeeee"
+    - text_color : "#333333"
+
+  # the followint blocks will be scrambled and shown in random order
+  # The nomber of the blocks and their content as well as the order of the content inside each block can be changed
+  - - SetCode: &sc1 "1"  
+    - type: "pause"
+      text : "Wenn Sie bereit sind, drücken Sie bitte die Taste, um das Video abzuspielen."
+      button_text : "Weiter"
+      button_color : "#4CAF50"
+    - type: "video"
+      video_filename: "FB.mp4"
+    - type: "question"
+      prompt: "In welcher Box ist ein Auto?"
+      options: ["Gelb", "Grun"]
+      colors: ["yellow","green"]
+      image: "FB.png"
+      setcode: *sc1 
+    - type: "question"
+      prompt: "Glaubt der Affe, dass ein Auto in der grünen Box ist?"
+      options: [" Ja ", "Nein"]
+      colors: ["antiquewhite", "antiquewhite"]
+      image: "FB.png"
+      setcode: *sc1 
+    - type: "question"
+      prompt: "Weiß der Affe, dass ein Auto in der grünen Box ist?"
+      options: [" Ja ", "Nein"]
+      colors: ["cyan", "cyan"]
+      image: "FB.png"
+      setcode: *sc1  
+    - type: "popup"
+      question: "Wie sicher bist du dir?"
+      options: ["Nicht so sicher", "Ziemlich sicher", "Ganz sicher"]
+      colors: ["gray", "gray","gray"]
+
+  - - SetCode: &sc2 "2"
+    - type: "pause"
+      text : "Wenn Sie bereit sind, drücken Sie bitte die Taste, um das Video abzuspielen."
+      button_text : "Weiter"
+      button_color : "#4CAF50"
+    - type: "video"
+      video_filename: "TB.mp4"
+    - type: "question"
+      prompt: "In welcher Box ist eine Erdbeere?"
+      options: ["Gelb", "Grun"]
+      colors: ["yellow","green"]
+      image: "TB.png"
+      setcode: *sc2 
+    - type: "question"
+      prompt: "Glaubt der Elefant, dass eine Erdbeere in der grünen Box ist?"
+      options: [" Ja ", "Nein"]
+      colors: ["antiquewhite", "antiquewhite"]
+      image: "TB.png"
+      setcode: *sc2 
+    - type: "question"
+      prompt: "Weiß der Elefant, dass eine Erdbeere in der grünen Box ist?"
+      options: [" Ja ", "Nein"]
+      colors: ["cyan", "cyan"]
+      image: "TB.png"
+      setcode: *sc2 
+    - type: "popup"
+      question: "Wie sicher bist du dir?"
+      options: ["Nicht so sicher", "Ziemlich sicher", "Ganz sicher"]
+      colors: ["gray", "gray","gray"]
+
+  - - SetCode: &sc3 "3"
+    - type: "pause"
+      text : "Wenn Sie bereit sind, drücken Sie bitte die Taste, um das Video abzuspielen."
+      button_text : "Weiter"
+      button_color : "#4CAF50"
+    - type: "video"
+      video_filename: "GI.mp4"
+    - type: "question"
+      prompt: "In welcher Box ist ein Würfel?"
+      options: ["Gelb", "Grun"]
+      colors: ["yellow","green"]
+      image: "GI.png"
+      setcode: *sc3
+    - type: "question"
+      prompt: "Glaubt der Vogel, dass ein Würfel in der grünen Box ist?"
+      options: [" Ja ", "Nein"]
+      colors: ["antiquewhite", "antiquewhite"]
+      image: "GI.png"
+      setcode: *sc3
+    - type: "question"
+      prompt: "Weiß der Vogel, dass ein Würfel in der grünen Box ist?"
+      options: [" Ja ", "Nein"]
+      colors: ["cyan", "cyan"]
+      image: "GI.png"
+      setcode: *sc3
+    - type: "popup"
+      question: "Wie sicher bist du dir?"
+      options: ["Nicht so sicher", "Ziemlich sicher", "Ganz sicher"]
+      colors: ["gray", "gray","gray"]
+
+  - - SetCode: &sc4  "4"
+    - type: "pause"
+      text : "Wenn Sie bereit sind, drücken Sie bitte die Taste, um das Video abzuspielen."
+      button_text : "Weiter"
+      button_color : "#4CAF50"
+    - type: "video"
+      video_filename: "GT.mp4"
+    - type: "question"
+      prompt: "In welcher Box ist ein Eis?"
+      options: ["Gelb", "Grun"]
+      colors: ["yellow","green"]
+      image: "GT.png"
+      setcode: *sc4
+    - type: "question"
+      prompt: "Glaubt das Krokodil, dass ein Eis in der gelben Box ist?"
+      options: [" Ja ", "Nein"]
+      colors: ["antiquewhite", "antiquewhite"]
+      image: "GT.png"
+      setcode: *sc4
+    - type: "question"
+      prompt: "Weiß das Krokodil, dass ein Eis in der gelben Box ist?"
+      options: [" Ja ", "Nein"]
+      colors: ["cyan", "cyan"]
+      image: "GT.png"
+      setcode: *sc4
+    - type: "popup"
+      question: "Wie sicher bist du dir?"
+      options: ["Nicht so sicher", "Ziemlich sicher", "Ganz sicher"]
+      colors: ["gray", "gray","gray"]

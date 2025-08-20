@@ -1,0 +1,90 @@
+export function loadPage(container, next) {
+  container.innerHTML = "";
+
+  const wrapper = document.createElement("div");
+  wrapper.style.display = "flex";
+  wrapper.style.justifyContent = "center";
+  wrapper.style.alignItems = "center";
+  wrapper.style.height = "100%";
+  wrapper.style.fontFamily = 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"';
+
+  const frame = document.createElement("div");
+  frame.style.display = "flex";
+  frame.style.flexDirection = "column";
+  frame.style.alignItems = "flex-start";
+  frame.style.gap = "16px";
+  frame.style.padding = "24px";
+  frame.style.border = "1px solid #ddd";
+  frame.style.borderRadius = "12px";
+  frame.style.boxShadow = "0 2px 10px rgba(0,0,0,0.06)";
+  frame.style.background = "#f5f5f5";
+
+  function setFrameWidth() {
+    const sideMarginCm = 5;
+    const pxPerCm = 37.7952755906;
+    const sideMarginPx = sideMarginCm * pxPerCm;
+    const width = window.innerWidth - 2 * sideMarginPx;
+    frame.style.width = width > 0 ? `${width}px` : "auto";
+  }
+  setFrameWidth();
+  window.addEventListener("resize", setFrameWidth);
+
+  const mainText = document.createElement("p");
+  mainText.style.fontSize = "1.2em";
+  mainText.style.textAlign = "justify";
+  mainText.style.lineHeight = "1.6";
+  mainText.style.hyphens = "auto";
+  mainText.style.margin = "0";
+  mainText.textContent = `{{ main_text }}`;
+  frame.appendChild(mainText);
+
+  {% for text in checkbox_texts %}
+    const label{{ loop.index }} = document.createElement("label");
+    label{{ loop.index }}.style.display = "flex";
+    label{{ loop.index }}.style.alignItems = "center";
+    label{{ loop.index }}.style.gap = "8px";
+    label{{ loop.index }}.style.marginBottom = "8px";
+
+    const checkbox{{ loop.index }} = document.createElement("input");
+    checkbox{{ loop.index }}.type = "checkbox";
+    checkbox{{ loop.index }}.className = "consent-checkbox";
+
+    label{{ loop.index }}.appendChild(checkbox{{ loop.index }});
+    label{{ loop.index }}.appendChild(document.createTextNode(" {{ text }}"));
+
+    frame.appendChild(label{{ loop.index }});
+  {% endfor %}
+
+  const btn = document.createElement("button");
+  btn.id = "startBtn";
+  btn.disabled = true;
+  btn.style.padding = "10px 20px";
+  btn.style.fontSize = "16px";
+  btn.style.background = "{{ button_color }}";
+  btn.style.color = "white";
+  btn.style.border = "none";
+  btn.style.borderRadius = "6px";
+  btn.textContent = "{{ button_text }}";
+  frame.appendChild(btn);
+
+  wrapper.appendChild(frame);
+  container.appendChild(wrapper);
+
+  const boxes = container.querySelectorAll(".consent-checkbox");
+
+  function toggleButton() {
+    btn.disabled = ![...boxes].every(b => b.checked);
+  }
+
+  boxes.forEach(cb => cb.addEventListener("change", toggleButton));
+  toggleButton();
+
+  btn.addEventListener("click", () => {
+    next(); // Load next page
+  });
+
+  history.replaceState(null, "", window.location.href);
+  window.addEventListener("popstate", () => {
+    location.replace(window.location.href);
+  });
+}

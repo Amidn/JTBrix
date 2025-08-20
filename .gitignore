@@ -112,3 +112,13 @@ ENV/
 .vscode/
 .idea/
 
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Custom ignore: sensitive config and template folder
+/src/JTBrix/Config/configPE.yml
+/src/JTBrix/Templates/JATOS_Templates_Farsi/
+/src/JTBrix/data/
+

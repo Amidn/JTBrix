@@ -1,0 +1,74 @@
+export function loadPage(container, next) {
+    // Clear container
+    container.innerHTML = "";
+
+    // Create wrapper
+    const wrapper = document.createElement("div");
+    wrapper.style.display = "flex";
+    wrapper.style.flexDirection = "column";
+    wrapper.style.alignItems = "center";
+    wrapper.style.justifyContent = "center";
+    wrapper.style.height = "100%";
+    wrapper.style.textAlign = "center";
+    wrapper.style.padding = "20px";
+
+    // Create framed container to enforce side margins (~5cm each side) and add a frame
+    const frame = document.createElement("div");
+    frame.style.display = "flex";
+    frame.style.flexDirection = "column";
+    frame.style.alignItems = "center";
+    frame.style.gap = "16px";
+    frame.style.padding = "24px"; // inner padding inside the frame
+    frame.style.border = "1px solid #ddd";
+    frame.style.borderRadius = "12px";
+    frame.style.boxShadow = "0 2px 10px rgba(0,0,0,0.06)";
+    frame.style.background = "#f5f5f5"; // light gray background
+
+    // Calculate width so that left/right margins are 5cm each when possible
+    const SIDE_MARGIN_CM = 5; // requested 5 cm per side on ~13" monitor
+    const CSS_DPI = 96; // CSS pixel density for absolute units
+    const sideMarginPx = Math.round(SIDE_MARGIN_CM * CSS_DPI / 2.54);
+
+    function setFrameWidth() {
+        const available = window.innerWidth - sideMarginPx * 2; // enforce 5cm each side
+        const minWidth = 320; // avoid too-narrow on phones
+        const width = Math.max(minWidth, available);
+        frame.style.width = width + "px";
+        // Keep the frame from exceeding container width
+        frame.style.maxWidth = "100%";
+        frame.style.boxSizing = "border-box";
+    }
+    setFrameWidth();
+    window.addEventListener("resize", setFrameWidth);
+
+    // Create info text
+    const infoText = document.createElement("div");
+    infoText.innerHTML = `{{ text | safe }}`;
+    infoText.style.fontSize = "1.2em";
+    infoText.style.marginBottom = "8px";
+    infoText.style.textAlign = "justify"; // justify the text
+    infoText.style.lineHeight = "1.6"; // better readability
+    infoText.style.hyphens = "auto"; // help justification on narrow widths
+
+    // Create button
+    const button = document.createElement("button");
+    button.textContent = `{{ button_text }}`;
+    button.style.padding = "12px 24px";
+    button.style.fontSize = "16px";
+    button.style.cursor = "pointer";
+    button.style.backgroundColor = `{{ button_color }}`;
+    button.style.color = "white";
+    button.style.border = "none";
+    button.style.borderRadius = "8px";
+
+    // Button click handler
+    button.addEventListener("click", () => {
+        next();
+    });
+
+    // Append into frame, then into wrapper, then container
+    frame.appendChild(infoText);
+    frame.appendChild(button);
+    wrapper.appendChild(frame);
+    container.appendChild(wrapper);
+}

@@ -1,0 +1,100 @@
+export function loadPage(container, next) {
+  const style = document.createElement('style');
+  style.innerHTML = `
+    #popup-background {
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        z-index: 9998;
+        overflow: hidden;
+        filter: blur(2px);
+    }
+
+    #popup-overlay {
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        font-family: Arial, sans-serif;
+    }
+
+    #popup {
+        width: 33vw;
+        height: 33vh;
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    #popup h2 {
+        text-align: center;
+        color: black;
+    }
+
+    #popup button {
+        padding: 10px;
+        margin: 5px;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1em;
+        cursor: pointer;
+    }
+  `;
+  document.head.appendChild(style);
+
+  const background = window.previousContent.cloneNode(true);
+  background.id = 'popup-background';
+  background.style.position = 'fixed';
+  background.style.top = '0';
+  background.style.left = '0';
+  background.style.width = '100vw';
+  background.style.height = '100vh';
+  background.style.zIndex = '9998';
+  background.style.overflow = 'hidden';
+  background.style.filter = 'blur(2px)';
+  document.body.appendChild(background);
+
+  const overlay = document.createElement('div');
+  overlay.id = 'popup-overlay';
+
+  const popup = document.createElement('div');
+  popup.id = 'popup';
+  popup.innerHTML = `
+    <h2>{{ question }}</h2>
+    <div>
+      {% for option, color in options_colors %}
+        <button style="background:{{ color }};" data-answer="{{ option }}">{{ option }}</button>
+      {% endfor %}
+    </div>
+  `;
+
+  overlay.appendChild(popup);
+  document.body.appendChild(overlay);
+
+  const startTime = Date.now();
+  popup.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const answer = btn.getAttribute('data-answer');
+      const duration = Date.now() - startTime;
+
+      const data = {
+        {{ id }}: answer,
+        {{ id }}_time: duration
+      };
+
+      jatos.appendResultData(data);
+      window.jatosData = { ...(window.jatosData || {}), ...data };
+
+      document.body.removeChild(overlay);
+      document.body.removeChild(background);
+      next();
+    });
+  });
+}

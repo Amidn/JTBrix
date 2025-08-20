@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Experiment</title>
+    <script src="jatos.js"></script>
+    <style>
+        html, body { margin: 0; padding: 0; height: 100%; }
+        body {
+          font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        #container { width: 100%; height: 100%; }
+        /* Welcome screen typography */
+        #welcome h1 {
+          font-size: 2.25rem; /* slightly larger than default */
+          margin: 0 0 12px 0;
+        }
+        #welcome p {
+          font-size: 1.2em; /* match previous page text size (~19px) */
+          line-height: 1.6;
+          margin: 0 0 16px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="welcome" style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+      <h1>Willkommen zu dieser Studie!</h1>
+      <p>Bitte beachten Sie, dass Sie einen Laptop benötigen, um teilnehmen und die Videos ansehen zu können. Bitte nehmen Sie nicht mit dem Handy an dieser Studie teil.</p>
+      <button id="startFullscreen" style="padding: 12px 24px; font-size: 16px; cursor: pointer;">In den Vollbildmodus wechseln</button>
+    </div>
+    <div id="container"></div>
+    <script type="module">
+        document.getElementById("container").style.display = "none";
+        window.startExperiment = function() {
+
+        const preTask = {{ pre_task | tojson }};
+        const mainBlocks = {{ main_blocks | tojson }};
+        const postTask = {{ post_task | tojson }};
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        let shuffledMainGroups = shuffle(mainBlocks.slice());
+
+        // Track shuffled main block order
+        const originalBlockIndices = mainBlocks.map((_, i) => i + 1);
+        const shuffledBlockOrder = shuffledMainGroups.map(group => {
+            return mainBlocks.findIndex(original => JSON.stringify(original) === JSON.stringify(group)) + 1;
+        });
+
+        // Store shuffled order in result
+        window.jatosData = { ...(window.jatosData || {}), shuffledBlockOrder };
+        jatos.appendResultData({ shuffledBlockOrder });
+
+        let mainSequence = [];
+        shuffledMainGroups.forEach(group => {
+            mainSequence = mainSequence.concat(group);
+        });
+
+        const fullSequence = preTask.concat(mainSequence, postTask);
+        let currentIndex = 0;
+        const container = document.getElementById("container");
+
+        function loadNextPage() {
+            currentIndex++;
+            loadPageFromJS(currentIndex);
+        }
+
+        function loadPageFromJS(index) {
+            // Do nothing if index is beyond the sequence length (end page will self-finalize)
+            if (index >= fullSequence.length) {
+                return;
+            }
+            if (index > 0) {
+                window.previousContent = container.cloneNode(true);
+            }
+  
+            const pageFile = fullSequence[index];
+            import(`./pages/${pageFile}`)
+                .then(module => {
+                    container.innerHTML = "";
+                    // The page will call next() → which calls loadNextPage() here.
+                    // The final end page is responsible for submitting results and ending the study.
+                    module.loadPage(container, loadNextPage);
+                })
+                .catch(err => {
+                    console.error("Failed to load", pageFile, err);
+                    container.innerHTML = `<p>Error loading page ${pageFile}</p>`;
+                });
+        }
+
+        // Load first page
+        if (performance.getEntriesByType("navigation")[0].type === "reload") {
+            window.location.href = "about:blank";
+        }
+
+        jatos.onLoad(() => {
+            loadPageFromJS(currentIndex);
+        });
+        };
+    </script>
+</body>
+<script>
+  function requestFullscreen() {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      return elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+      return elem.webkitRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) {
+      return elem.mozRequestFullScreen();
+    } else if (elem.msRequestFullscreen) {
+      return elem.msRequestFullscreen();
+    }
+  }
+
+  document.getElementById("startFullscreen").addEventListener("click", () => {
+    requestFullscreen().then(() => {
+      // Hide welcome, show container
+      document.getElementById("welcome").style.display = "none";
+      document.getElementById("container").style.display = "block";
+
+      // Load experiment script
+      window.startExperiment(); // this will be defined in your module script
+    }).catch(err => {
+      alert("Please allow fullscreen to start the experiment.");
+      console.error("Fullscreen error:", err);
+    });
+  });
+</script>
+</html>

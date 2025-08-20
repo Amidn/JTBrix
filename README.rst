@@ -6,7 +6,7 @@ JTBrix
 
 
 .. image:: https://readthedocs.org/projects/JTBrix/badge/?version=latest
-    :target: https://JTBrix.readthedocs.io/en/latest/?version=latest
+    :target: https://amidn.github.io/JTBrix/    
     :alt: Documentation Status
 
 

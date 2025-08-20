@@ -1,0 +1,59 @@
+export function loadPage(container, next) {
+    // Clear container
+    container.innerHTML = "";
+
+    // Create wrapper
+    const wrapper = document.createElement("div");
+    wrapper.style.display = "flex";
+    wrapper.style.justifyContent = "center";
+    wrapper.style.alignItems = "center";
+    wrapper.style.height = "100%";
+    wrapper.style.fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+
+    // Create frame
+    const frame = document.createElement("div");
+    frame.style.display = "flex";
+    frame.style.flexDirection = "column";
+    frame.style.alignItems = "center";
+    frame.style.gap = "16px";
+    frame.style.padding = "32px";
+    frame.style.border = "1px solid #ddd";
+    frame.style.borderRadius = "12px";
+    frame.style.boxShadow = "0 2px 10px rgba(0,0,0,0.06)";
+    frame.style.background = "#f5f5f5";
+    frame.style.width = "calc(100vw - 10cm)";
+    frame.style.maxWidth = "700px";
+    frame.style.boxSizing = "border-box";
+
+    // Create info text
+    const infoText = document.createElement("div");
+    infoText.innerHTML = `{{ text | safe }}`;
+    infoText.style.fontSize = "1.2em";
+    infoText.style.textAlign = "center";
+    infoText.style.lineHeight = "1.6";
+    infoText.style.hyphens = "auto";
+    infoText.style.margin = "0";
+
+    // Create button
+    const button = document.createElement("button");
+    button.textContent = `{{ button_text }}`;
+    button.style.padding = "12px 24px";
+    button.style.fontSize = "18px";
+    button.style.cursor = "pointer";
+    button.style.backgroundColor = `{{ button_color }}`;
+    button.style.color = "white";
+    button.style.border = "none";
+    button.style.borderRadius = "6px";
+    button.style.alignSelf = "center";
+
+    // Button click handler
+    button.addEventListener("click", () => {
+        next();
+    });
+
+    // Append
+    frame.appendChild(infoText);
+    frame.appendChild(button);
+    wrapper.appendChild(frame);
+    container.appendChild(wrapper);
+}
